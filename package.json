@@ -1,0 +1,26 @@
+{
+  "name": "dordoc-api",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "config": "^3.2.4",
+    "koa": "^2.11.0",
+    "koa-logger": "^3.2.1",
+    "koa-router": "^7.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/dordoc/api.git"
+  },
+  "author": "mysterenct@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/dordoc/api/issues"
+  },
+  "homepage": "https://gitlab.com/dordoc/api#readme"
+}
