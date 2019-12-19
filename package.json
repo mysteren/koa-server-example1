@@ -6,11 +6,14 @@
   "dependencies": {
     "config": "^3.2.4",
     "koa": "^2.11.0",
+    "koa-combine-routers": "^4.0.2",
     "koa-logger": "^3.2.1",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.8.1"
   },
   "devDependencies": {},
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
