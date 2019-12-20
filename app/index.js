@@ -2,15 +2,20 @@
 
 const Koa = require('koa');
 const logger = require('koa-logger');
+const kbody = require('koa-body');
 const config = require('config');
-
+const cors = require('@koa/cors');
 const app = new Koa();
 const router = require('./router/main');
+
 require('./db');
 
-console.log(router);
- 
-app.use(logger());  
+if (config.logger) {
+    app.use(logger()); 
+}
+
+app.use(kbody());
+app.use(cors());
 app.use(router());
 // app.use(router.allowedMethods());
 app.listen(config.server.port, () => {

@@ -24,3 +24,33 @@
 // });
 
 // const Entity = mongolass.model('Entity', EntitySchema)
+const  mongoose = require('mongoose');
+const autoIncrement = require('mongoose-auto-increment');
+
+autoIncrement.initialize(mongoose.connection);
+
+const EntitySchema = new mongoose.Schema({
+    _id: Number,
+    // id: Number,
+    name: String,
+    address: String,
+    phone: String,
+    inn: String,
+    opko: String,
+    members: [{
+        name: String,
+        position: String,
+        documents: [{
+            name: String,
+            type: Number
+        }]
+    }]
+});
+
+EntitySchema.plugin(autoIncrement.plugin, {model: 'Entity', startAt: 1});
+
+EntitySchema.set('toJSON', {
+    virtuals: true
+});
+
+module.exports = mongoose.model('Entity', EntitySchema);

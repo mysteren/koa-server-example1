@@ -10,8 +10,6 @@ mainRouter.get('/', async(ctx) => {
 
 const entityRouter = require('./entity');
 
-console.log(entityRouter);
-
 const router = combineRouters(
   mainRouter,
   entityRouter

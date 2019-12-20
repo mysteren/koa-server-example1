@@ -4,12 +4,15 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "@koa/cors": "^2.2.3",
     "config": "^3.2.4",
     "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
     "koa-combine-routers": "^4.0.2",
     "koa-logger": "^3.2.1",
     "koa-router": "^7.4.0",
-    "mongoose": "^5.8.1"
+    "mongoose": "^5.8.1",
+    "mongoose-auto-increment": "^5.0.1"
   },
   "devDependencies": {},
   "scripts": {

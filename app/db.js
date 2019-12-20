@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
 const config = require('config');
 
-console.log(config);
+let connectUrl;
 
 if (config.mongodb.user && config.mongodb.pass) {
-    const connectUrl = `mongodb://${config.mongodb.user}:${config.mongodb.pass}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`   
+    connectUrl = `mongodb://${config.mongodb.user}:${config.mongodb.pass}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`   
 } else {
-    const connectUrl = `mongodb://${config.mongodb.user}:${config.mongodb.pass}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`
+    connectUrl = `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`
 }
 
+mongoose.Promise = global.Promise;
 
 mongoose.connect(connectUrl, {useNewUrlParser: true}).catch((e) => {
     console.error(e);
