@@ -31,18 +31,19 @@ autoIncrement.initialize(mongoose.connection);
 
 const EntitySchema = new mongoose.Schema({
     _id: Number,
-    // id: Number,
     name: String,
     address: String,
     phone: String,
     inn: String,
     opko: String,
     members: [{
+        //_id: Number,
         name: String,
         position: String,
         documents: [{
+            //_id: Number,
             name: String,
-            type: Number
+            for_doc: [String]
         }]
     }]
 });
