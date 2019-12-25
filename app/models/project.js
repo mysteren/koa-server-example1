@@ -29,7 +29,23 @@ const MeasureSchema = new mongoose.Schema({
       type: Number,
       ref: 'Entity'
     }
-  ]
+  ],
+  workgroups: [{
+    name: String,
+    works: [{
+      work_id: {
+        type: Number,
+        ref: 'Work'
+      },
+      measure_id: {
+        type: Number,
+        ref: 'Work'
+      },
+      price: Number,
+      count: Number,
+      summ: Number
+    }]
+  }]
 
 }, {
 	versionKey: false,
