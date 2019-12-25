@@ -1,7 +1,7 @@
 module.exports = {
     app: {
         name: 'dordoc-api',
-        version: '0.1.1'
+        version: '0.1.2'
     },
     server: {
         port: 3002

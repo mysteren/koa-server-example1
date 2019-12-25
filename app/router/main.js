@@ -8,11 +8,17 @@ mainRouter.get('/', async(ctx) => {
     ctx.body = config.app
 });
 
-const entityRouter = require('./entity');
-
+const entityRouter = require('./entity'),
+  projectRouter = require('./project'),
+  measureRouter = require('./measure'),
+  workRouter = require('./work');
+ 
 const router = combineRouters(
   mainRouter,
-  entityRouter
+  entityRouter,
+  projectRouter,
+  measureRouter,
+  workRouter,
 );
 
 
