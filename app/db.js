@@ -1,12 +1,19 @@
 const mongoose = require('mongoose');
 const config = require('config');
 
+let dbc = config.mongodb;
 let connectUrl;
 
-if (config.mongodb.user && config.mongodb.pass) {
-  connectUrl = `mongodb://${config.mongodb.user}:${config.mongodb.pass}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`;
+console.log(config.util.getEnv('NODE_ENV'));
+
+if (config.util.getEnv('NODE_ENV') === 'test') {
+  dbc = config.mongodb_test;
+}
+
+if (dbc.user && dbc.pass) {
+  connectUrl = `mongodb://${dbc.user}:${dbc.pass}@${dbc.host}:${dbc.port}/${dbc.base}`;
 } else {
-  connectUrl = `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`;
+  connectUrl = `mongodb://${dbc.host}:${dbc.port}/${dbc.base}`;
 }
 
 mongoose.Promise = global.Promise;

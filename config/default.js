@@ -12,6 +12,16 @@ module.exports = {
     port: 27017,
     user: '',
     pass: '',
-    base: '',
+    base: 'dordoc',
+  },
+  server_test: {
+    port: 3003,
+  },
+  mongodb_test: {
+    host: 'localhost',
+    port: 27017,
+    user: '',
+    pass: '',
+    base: 'dordoc-test',
   },
 };
