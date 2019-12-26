@@ -42,7 +42,6 @@ router.get('/project/:id', async (ctx) => {
 
 // create new record
 router.post('/project', async (ctx) => {
-
   const record = new Project({ ...ctx.request.body });
   await record.save();
 

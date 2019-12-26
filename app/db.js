@@ -4,9 +4,9 @@ const config = require('config');
 let connectUrl;
 
 if (config.mongodb.user && config.mongodb.pass) {
-  connectUrl = `mongodb://${config.mongodb.user}:${config.mongodb.pass}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`   
+  connectUrl = `mongodb://${config.mongodb.user}:${config.mongodb.pass}@${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`;
 } else {
-  connectUrl = `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`
+  connectUrl = `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.base}`;
 }
 
 mongoose.Promise = global.Promise;

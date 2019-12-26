@@ -43,7 +43,6 @@ router.get('/measure/:id', async (ctx) => {
 
 // create new record
 router.post('/measure', async (ctx) => {
-
   const record = new Measure({ ...ctx.request.body });
   await record.save();
 

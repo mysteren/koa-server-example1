@@ -45,7 +45,7 @@ router.post('/work', async (ctx) => {
 
 // update record
 router.put('/work/:id', async (ctx) => {
-  const record = await Work.findByIdAndUpdate(ctx.params.id, {...ctx.request.body});
+  const record = await Work.findByIdAndUpdate(ctx.params.id, { ...ctx.request.body });
   ctx.body = record;
 });
 

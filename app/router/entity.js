@@ -25,15 +25,11 @@ router.get('/entity', async (ctx) => {
 
   ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
   ctx.set('X-Total-Count', count);
-  ctx.body = list
+  ctx.body = list;
 });
 
 // get one record by id
 router.get('/entity/:id', async (ctx) => {
-  /**
-   * @todo 
-   */
-  //console.log(ctx.params.id);
   const query = Entity.findById(ctx.params.id);
   const record = await query.exec();
   ctx.body = record;
@@ -41,8 +37,7 @@ router.get('/entity/:id', async (ctx) => {
 
 // create new record
 router.post('/entity', async (ctx) => {
-
-  let entity = new Entity({...ctx.request.body});
+  const entity = new Entity({ ...ctx.request.body });
   await entity.save();
 
   ctx.body = entity;
@@ -50,14 +45,14 @@ router.post('/entity', async (ctx) => {
 
 // update record
 router.put('/entity/:id', async (ctx) => {
-  const entity = await Entity.findByIdAndUpdate(ctx.params.id, {...ctx.request.body});
+  const entity = await Entity.findByIdAndUpdate(ctx.params.id, { ...ctx.request.body });
   ctx.body = entity;
 });
 
 // delete record
 router.delete('/entity/:id', async (ctx) => {
   const entity = await Entity.findByIdAndDelete(ctx.params.id);
-  ctx.body = entity
+  ctx.body = entity;
 });
 
 module.exports = router;
