@@ -30,6 +30,13 @@ const MeasureSchema = new mongoose.Schema({
       ref: 'Entity',
     },
   ],
+  quality_control_service: {
+    type: Number,
+    required: true,
+    ref: 'Entity',
+  },
+  start_date: Date,
+  end_date: Date,
   workgroups: [{
     name: String,
     works: [{
@@ -37,16 +44,17 @@ const MeasureSchema = new mongoose.Schema({
         type: Number,
         ref: 'Work',
       },
-      measure_id: {
-        type: Number,
-        ref: 'Work',
-      },
-      price: Number,
-      count: Number,
-      summ: Number,
+      measures: [{
+        measure_id: {
+          type: Number,
+          ref: 'Measure',
+        },
+        price: Number,
+        count: Number,
+        summ: Number,
+      }],
     }],
   }],
-
 }, {
   versionKey: false,
   toJSON: {
