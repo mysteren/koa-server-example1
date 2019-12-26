@@ -4,15 +4,15 @@ const config = require('config');
 
 const mainRouter = new Router();
 
-mainRouter.get('/', async(ctx) => {
-    ctx.body = config.app
+mainRouter.get('/', async (ctx) => {
+  ctx.body = config.app;
 });
 
-const entityRouter = require('./entity'),
-  projectRouter = require('./project'),
-  measureRouter = require('./measure'),
-  workRouter = require('./work');
- 
+const entityRouter = require('./entity');
+const projectRouter = require('./project');
+const measureRouter = require('./measure');
+const workRouter = require('./work');
+
 const router = combineRouters(
   mainRouter,
   entityRouter,
@@ -22,4 +22,4 @@ const router = combineRouters(
 );
 
 
-module.exports = router
+module.exports = router;
