@@ -35,17 +35,20 @@ router.get('/project', async (ctx) => {
 
 // get one record by id
 router.get('/project/:id', async (ctx) => {
-  const query = Project.findById(ctx.params.id);
-  const record = await query.exec();
+  const record = await Project.findById(ctx.params.id);
   ctx.body = record;
 });
 
 // create new record
 router.post('/project', async (ctx) => {
-  const record = new Project({ ...ctx.request.body });
-  await record.save();
-
-  ctx.body = record;
+  try {
+    let record = new Project({ ...ctx.request.body });
+    record = await record.save();
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // update record

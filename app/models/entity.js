@@ -2,21 +2,22 @@ const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
 
 autoIncrement.initialize(mongoose.connection);
+mongoose.set('useFindAndModify', false);
 
 const EntitySchema = new mongoose.Schema({
   _id: Number,
-  name: String,
+  name: { type: String, required: true },
   address: String,
   phone: String,
   inn: String,
   opko: String,
   members: [{
     // _id: Number,
-    name: String,
+    name: { type: String, required: true },
     position: String,
     documents: [{
       // _id: Number,
-      name: String,
+      name: { type: String, required: true },
       for_doc: [String],
     }],
   }],

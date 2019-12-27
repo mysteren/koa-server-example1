@@ -35,24 +35,36 @@ router.get('/measure', async (ctx) => {
 
 // get one record by id
 router.get('/measure/:id', async (ctx) => {
-  // console.log(ctx.params.id);
-  const query = Measure.findById(ctx.params.id);
-  const record = await query.exec();
+  const record = await Measure.findById(ctx.params.id);
   ctx.body = record;
 });
 
 // create new record
 router.post('/measure', async (ctx) => {
-  const record = new Measure({ ...ctx.request.body });
-  await record.save();
-
-  ctx.body = record;
+  try {
+    const record = new Measure({ ...ctx.request.body });
+    await record.save();
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // update record
 router.put('/measure/:id', async (ctx) => {
-  const record = await Measure.findByIdAndUpdate(ctx.params.id, { ...ctx.request.body });
-  ctx.body = record;
+  try {
+    let record = await Measure.findByIdAndUpdate(
+      ctx.params.id,
+      { ...ctx.request.body },
+      { useFindAndModify: false },
+    );
+    record = await Measure.findById(ctx.params.id);
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // delete record

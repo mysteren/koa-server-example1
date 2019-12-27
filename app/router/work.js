@@ -20,7 +20,6 @@ router.get('/work', async (ctx) => {
   }
 
   const list = await Work.find(null, null, options).exec();
-
   const count = await Work.count(null, null, options).exec();
 
   ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
@@ -30,23 +29,36 @@ router.get('/work', async (ctx) => {
 
 // get one record by id
 router.get('/work/:id', async (ctx) => {
-  const query = Work.findById(ctx.params.id);
-  const record = await query.exec();
+  const record = await Work.findById(ctx.params.id);
   ctx.body = record;
 });
 
 // create new record
 router.post('/work', async (ctx) => {
-  const record = new Work({ ...ctx.request.body });
-  await record.save();
-
-  ctx.body = record;
+  try {
+    let record = new Work({ ...ctx.request.body });
+    record = await record.save();
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // update record
 router.put('/work/:id', async (ctx) => {
-  const record = await Work.findByIdAndUpdate(ctx.params.id, { ...ctx.request.body });
-  ctx.body = record;
+  try {
+    let record = await Work.findByIdAndUpdate(
+      ctx.params.id,
+      { ...ctx.request.body },
+      { useFindAndModify: false },
+    );
+    record = await Work.findById(ctx.params.id);
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // delete record

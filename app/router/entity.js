@@ -21,7 +21,7 @@ router.get('/entity', async (ctx) => {
 
   const list = await Entity.find(null, null, options).exec();
 
-  const count = await Entity.count(null, null, options).exec();
+  const count = await Entity.countDocuments(null, null, options).exec();
 
   ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
   ctx.set('X-Total-Count', count);
@@ -30,29 +30,42 @@ router.get('/entity', async (ctx) => {
 
 // get one record by id
 router.get('/entity/:id', async (ctx) => {
-  const query = Entity.findById(ctx.params.id);
-  const record = await query.exec();
+  const record = await Entity.findById(ctx.params.id);
   ctx.body = record;
 });
 
 // create new record
 router.post('/entity', async (ctx) => {
-  const entity = new Entity({ ...ctx.request.body });
-  await entity.save();
-
-  ctx.body = entity;
+  try {
+    let record = new Entity({ ...ctx.request.body });
+    record = await record.save();
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // update record
 router.put('/entity/:id', async (ctx) => {
-  const entity = await Entity.findByIdAndUpdate(ctx.params.id, { ...ctx.request.body });
-  ctx.body = entity;
+  try {
+    let record = await Entity.findByIdAndUpdate(
+      ctx.params.id,
+      { ...ctx.request.body },
+      { useFindAndModify: false },
+    );
+    record = await Entity.findById(ctx.params.id);
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // delete record
 router.delete('/entity/:id', async (ctx) => {
-  const entity = await Entity.findByIdAndDelete(ctx.params.id);
-  ctx.body = entity;
+  const record = await Entity.findByIdAndDelete(ctx.params.id);
+  ctx.body = record;
 });
 
 module.exports = router;
