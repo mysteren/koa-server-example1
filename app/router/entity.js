@@ -50,9 +50,9 @@ router.post('/entity', async (ctx) => {
 router.put('/entity/:id', async (ctx) => {
   try {
     let record = await Entity.findByIdAndUpdate(
-      ctx.params.id,
+      { _id: ctx.params.id },
       { ...ctx.request.body },
-      { useFindAndModify: false },
+      { useFindAndModify: false, runValidators: true },
     );
     record = await Entity.findById(ctx.params.id);
     ctx.body = record;

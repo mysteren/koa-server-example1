@@ -26,7 +26,7 @@ router.get('/measure', async (ctx) => {
   }
 
   const list = await Measure.find(filter, null, options).exec();
-  const count = await Measure.count(filter, null, options).exec();
+  const count = await Measure.countDocuments(filter, null, options).exec();
 
   ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
   ctx.set('X-Total-Count', count);
@@ -57,7 +57,7 @@ router.put('/measure/:id', async (ctx) => {
     let record = await Measure.findByIdAndUpdate(
       ctx.params.id,
       { ...ctx.request.body },
-      { useFindAndModify: false },
+      { useFindAndModify: false, runValidators: true },
     );
     record = await Measure.findById(ctx.params.id);
     ctx.body = record;

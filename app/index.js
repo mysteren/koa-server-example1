@@ -9,6 +9,10 @@ const app = new Koa();
 
 require('./db');
 
+if (config.logger) {
+  app.use(logger());
+}
+
 app.use(kbody());
 app.use(cors());
 app.use(router());
@@ -18,8 +22,6 @@ let servPort = config.server.port;
 
 if (config.util.getEnv('NODE_ENV') === 'test') {
   servPort = config.server_test.port;
-} else {
-  app.use(logger());
 }
 
 const server = app.listen(servPort, () => {

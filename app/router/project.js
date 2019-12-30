@@ -53,12 +53,18 @@ router.post('/project', async (ctx) => {
 
 // update record
 router.put('/project/:id', async (ctx) => {
-  const record = await Project.findByIdAndUpdate(
-    ctx.params.id,
-    { ...ctx.request.body },
-    { useFindAndModify: false },
-  );
-  ctx.body = record;
+  try {
+    let record = await Project.findByIdAndUpdate(
+      ctx.params.id,
+      { ...ctx.request.body },
+      { useFindAndModify: false, runValidators: true },
+    );
+    record = await Project.findById(ctx.params.id);
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // delete record

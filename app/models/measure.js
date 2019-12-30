@@ -5,7 +5,10 @@ autoIncrement.initialize(mongoose.connection);
 
 const MeasureSchema = new mongoose.Schema({
   _id: Number,
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  },
 }, {
   versionKey: false,
   toJSON: {

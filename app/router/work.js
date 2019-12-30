@@ -51,7 +51,7 @@ router.put('/work/:id', async (ctx) => {
     let record = await Work.findByIdAndUpdate(
       ctx.params.id,
       { ...ctx.request.body },
-      { useFindAndModify: false },
+      { useFindAndModify: false, runValidators: true },
     );
     record = await Work.findById(ctx.params.id);
     ctx.body = record;

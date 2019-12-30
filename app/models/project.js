@@ -30,11 +30,12 @@ const MeasureSchema = new mongoose.Schema({
       ref: 'Entity',
     },
   ],
-  quality_control_service: {
-    type: Number,
-    required: true,
-    ref: 'Entity',
-  },
+  quality_control_services: [
+    {
+      type: Number,
+      ref: 'Entity',
+    },
+  ],
   start_date: Date,
   end_date: Date,
   workgroups: [{
