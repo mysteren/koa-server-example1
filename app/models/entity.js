@@ -1,56 +1,38 @@
-
-// const Schema = Mongo.Schema
-
-
-// const EntityDocumentsSchema = new Schema('EntityDocumentsSchema', {
-//     name: { type: 'string', required: true },
-//     type: { type: 'number', default: 0 },
-// });
-
-
-// const EntityMembersSchema = new Schema('EntityMembersSchema', {
-//     name: { type: 'string', required: true },
-//     position: { type: 'string', required: false },
-//     documents: [EntityDocumentsSchema]
-// });
-  
-// const EntitySchema = new Schema('EntitySchema', {
-//   name: { type: 'string', required: true },
-//   address: { type: 'string', required: false },
-//   phone: { type: 'string', required: false },
-//   inn: { type: 'string', required: false },
-//   opko: { type: 'string', required: false },
-//   members: [EntityMembersSchema],
-// });
-
-// const Entity = mongolass.model('Entity', EntitySchema)
-const  mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
 
 autoIncrement.initialize(mongoose.connection);
+mongoose.set('useFindAndModify', false);
 
 const EntitySchema = new mongoose.Schema({
-    _id: Number,
-    // id: Number,
-    name: String,
-    address: String,
-    phone: String,
-    inn: String,
-    opko: String,
-    members: [{
-        name: String,
-        position: String,
-        documents: [{
-            name: String,
-            type: Number
-        }]
-    }]
+  _id: Number,
+  name: { type: String, required: true },
+  address: String,
+  phone: String,
+  inn: String,
+  opko: String,
+  members: [{
+    // _id: Number,
+    name: { type: String, required: true },
+    position: String,
+    documents: [{
+      // _id: Number,
+      name: { type: String, required: true },
+      for_doc: [String],
+    }],
+  }],
+}, {
+  versionKey: false,
+  toJSON: {
+    transform: (doc, ret) => {
+      const data = ret;
+      data.id = ret._id;
+      delete data._id;
+      return data;
+    },
+  },
 });
 
-EntitySchema.plugin(autoIncrement.plugin, {model: 'Entity', startAt: 1});
-
-EntitySchema.set('toJSON', {
-    virtuals: true
-});
+EntitySchema.plugin(autoIncrement.plugin, { model: 'Entity', startAt: 1 });
 
 module.exports = mongoose.model('Entity', EntitySchema);

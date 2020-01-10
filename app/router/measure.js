@@ -1,10 +1,10 @@
 const Router = require('koa-router');
-const Project = require('../models/project');
+const Measure = require('../models/measure');
 
 const router = new Router();
 
 // get all records
-router.get('/project', async (ctx) => {
+router.get('/measure', async (ctx) => {
   const q = ctx.request.query;
   const filter = {};
   const options = {};
@@ -25,8 +25,8 @@ router.get('/project', async (ctx) => {
     filter._id = q.id;
   }
 
-  const list = await Project.find(filter, null, options).exec();
-  const count = await Project.count(filter, null, options).exec();
+  const list = await Measure.find(filter, null, options).exec();
+  const count = await Measure.countDocuments(filter, null, options).exec();
 
   ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
   ctx.set('X-Total-Count', count);
@@ -34,16 +34,16 @@ router.get('/project', async (ctx) => {
 });
 
 // get one record by id
-router.get('/project/:id', async (ctx) => {
-  const record = await Project.findById(ctx.params.id);
+router.get('/measure/:id', async (ctx) => {
+  const record = await Measure.findById(ctx.params.id);
   ctx.body = record;
 });
 
 // create new record
-router.post('/project', async (ctx) => {
+router.post('/measure', async (ctx) => {
   try {
-    let record = new Project({ ...ctx.request.body });
-    record = await record.save();
+    const record = new Measure({ ...ctx.request.body });
+    await record.save();
     ctx.body = record;
   } catch (err) {
     ctx.status = 500;
@@ -52,14 +52,14 @@ router.post('/project', async (ctx) => {
 });
 
 // update record
-router.put('/project/:id', async (ctx) => {
+router.put('/measure/:id', async (ctx) => {
   try {
-    let record = await Project.findByIdAndUpdate(
+    let record = await Measure.findByIdAndUpdate(
       ctx.params.id,
       { ...ctx.request.body },
       { useFindAndModify: false, runValidators: true },
     );
-    record = await Project.findById(ctx.params.id);
+    record = await Measure.findById(ctx.params.id);
     ctx.body = record;
   } catch (err) {
     ctx.status = 500;
@@ -68,8 +68,8 @@ router.put('/project/:id', async (ctx) => {
 });
 
 // delete record
-router.delete('/project/:id', async (ctx) => {
-  const record = await Project.findByIdAndDelete(ctx.params.id);
+router.delete('/measure/:id', async (ctx) => {
+  const record = await Measure.findByIdAndDelete(ctx.params.id);
   ctx.body = record;
 });
 

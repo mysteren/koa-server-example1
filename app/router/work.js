@@ -1,14 +1,12 @@
 const Router = require('koa-router');
-const Project = require('../models/project');
+const Work = require('../models/work');
 
 const router = new Router();
 
 // get all records
-router.get('/project', async (ctx) => {
+router.get('/work', async (ctx) => {
   const q = ctx.request.query;
-  const filter = {};
   const options = {};
-
   if (q._sort) {
     const sort = q._sort === 'id' ? '_id' : q._sort;
     const order = q._order === 'DESC' ? -1 : 1;
@@ -21,12 +19,8 @@ router.get('/project', async (ctx) => {
     options.limit = q._end - options.skip;
   }
 
-  if (q.id) {
-    filter._id = q.id;
-  }
-
-  const list = await Project.find(filter, null, options).exec();
-  const count = await Project.count(filter, null, options).exec();
+  const list = await Work.find(null, null, options).exec();
+  const count = await Work.count(null, null, options).exec();
 
   ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
   ctx.set('X-Total-Count', count);
@@ -34,15 +28,15 @@ router.get('/project', async (ctx) => {
 });
 
 // get one record by id
-router.get('/project/:id', async (ctx) => {
-  const record = await Project.findById(ctx.params.id);
+router.get('/work/:id', async (ctx) => {
+  const record = await Work.findById(ctx.params.id);
   ctx.body = record;
 });
 
 // create new record
-router.post('/project', async (ctx) => {
+router.post('/work', async (ctx) => {
   try {
-    let record = new Project({ ...ctx.request.body });
+    let record = new Work({ ...ctx.request.body });
     record = await record.save();
     ctx.body = record;
   } catch (err) {
@@ -52,14 +46,14 @@ router.post('/project', async (ctx) => {
 });
 
 // update record
-router.put('/project/:id', async (ctx) => {
+router.put('/work/:id', async (ctx) => {
   try {
-    let record = await Project.findByIdAndUpdate(
+    let record = await Work.findByIdAndUpdate(
       ctx.params.id,
       { ...ctx.request.body },
       { useFindAndModify: false, runValidators: true },
     );
-    record = await Project.findById(ctx.params.id);
+    record = await Work.findById(ctx.params.id);
     ctx.body = record;
   } catch (err) {
     ctx.status = 500;
@@ -68,8 +62,8 @@ router.put('/project/:id', async (ctx) => {
 });
 
 // delete record
-router.delete('/project/:id', async (ctx) => {
-  const record = await Project.findByIdAndDelete(ctx.params.id);
+router.delete('/work/:id', async (ctx) => {
+  const record = await Work.findByIdAndDelete(ctx.params.id);
   ctx.body = record;
 });
 

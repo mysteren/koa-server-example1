@@ -1,67 +1,71 @@
 const Router = require('koa-router');
-const router = new Router();
-
-
 const Entity = require('../models/entity');
+
+const router = new Router();
 
 // get all records
 router.get('/entity', async (ctx) => {
+  const q = ctx.request.query;
+  const options = {};
+  if (q._sort) {
+    const sort = q._sort === 'id' ? '_id' : q._sort;
+    const order = q._order === 'DESC' ? -1 : 1;
+    options.sort = { [sort]: order };
+  }
 
-	console.log(ctx.request.query);
+  options.skip = Number(q._start);
 
-	const q = ctx.request.query,
-		options = {};
-	if (q._sort) {
-		const sort = q._sort === 'id' ? '_id' : q._sort,
-			order = q._order === 'DESC' ? -1 : 1;
-		options.sort = {[sort]: order}    ;
-	}
+  if (q._end) {
+    options.limit = q._end - options.skip;
+  }
 
-	options.skip = Number(q._start);
+  const list = await Entity.find(null, null, options).exec();
 
-	if (q._end) {
-		options.limit = q._end - options.skip;
-	}
+  const count = await Entity.countDocuments(null, null, options).exec();
 
-	const list = await Entity.find(null, null, options).exec();
-
-	const count = await Entity.count(null, null, options).exec();
-
-	ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
-	ctx.set('X-Total-Count', count);
-	ctx.body = list
+  ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
+  ctx.set('X-Total-Count', count);
+  ctx.body = list;
 });
 
 // get one record by id
 router.get('/entity/:id', async (ctx) => {
-	/**
-	 * @todo 
-	 */
-	//console.log(ctx.params.id);
-	const query = Entity.findById(ctx.params.id);
-	const record = await query.exec();
-	ctx.body = record;
+  const record = await Entity.findById(ctx.params.id);
+  ctx.body = record;
 });
 
 // create new record
 router.post('/entity', async (ctx) => {
-
-	let entity = new Entity({...ctx.request.body});
-	await entity.save();
-
-	ctx.body = entity;
+  try {
+    let record = new Entity({ ...ctx.request.body });
+    record = await record.save();
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // update record
 router.put('/entity/:id', async (ctx) => {
-	const entity = await Entity.findByIdAndUpdate(ctx.params.id, {...ctx.request.body});
-	ctx.body = entity;
+  try {
+    let record = await Entity.findByIdAndUpdate(
+      { _id: ctx.params.id },
+      { ...ctx.request.body },
+      { useFindAndModify: false, runValidators: true },
+    );
+    record = await Entity.findById(ctx.params.id);
+    ctx.body = record;
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
 });
 
 // delete record
 router.delete('/entity/:id', async (ctx) => {
-	const entity = await Entity.findByIdAndDelete(ctx.params.id);
-	ctx.body = entity
+  const record = await Entity.findByIdAndDelete(ctx.params.id);
+  ctx.body = record;
 });
 
 module.exports = router;
