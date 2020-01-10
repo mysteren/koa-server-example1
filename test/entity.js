@@ -5,7 +5,6 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../app/index');
 const Entity = require('../app/models/entity');
-const mochaAsync = require('./libs/mocha-async');
 
 const should = chai.should();
 
@@ -77,18 +76,27 @@ describe('ENTITY', () => {
 
   // update
   describe('/PUT Entity', () => {
-    it('обновление Entity', async () => {
-      let record = new Entity({ name: 'Eitity 1', address: 'text2', phone: '+7 (000) 000-00-00' });
-      record = await record.save();
-      chai.request(server)
-        .put(`/entity/${record.id}`)
-        .send({
-          name: 'Eitity #233424',
-          address: null,
-          phone: '+7 (000) 101-00-00',
-          inn: '0002',
-        })
-        .end(async (err, res) => {
+    it('обновление Entity', (done) => {
+      new Promise((resolve) => {
+        const record = new Entity({
+          _id: 1,
+          name: 'Eitity 1',
+          address: 'text2',
+          phone: '+7 (000) 000-00-00',
+        });
+        resolve(record.save());
+      })
+
+        .then((record) => chai.request(server)
+          .put(`/entity/${record.id}`)
+          .send({
+            name: 'Eitity #233424',
+            address: null,
+            phone: '+7 (000) 101-00-00',
+            inn: '0002',
+          }))
+
+        .then((res) => {
           if (res.status === 200) {
             res.body.should.be.a('object');
             res.body.should.have.property('address').eql(null);
@@ -97,32 +105,51 @@ describe('ENTITY', () => {
           } else {
             res.should.have.status(204);
           }
+          return Entity.findById(1);
+        })
 
-          const dbRecord = await Entity.findById(record.id);
-
-          // should.not.exist({});
-
-          should.not.equal(dbRecord, null);
-          // dbRecord.should.have.property('address').eql(null);
-          // dbRecord.should.have.property('phone').eql('+7 (000) 102-00-00');
-          // dbRecord.should.have.property('inn').eql('0002');
-        });
+        .then((record) => {
+          should.not.equal(record, null);
+          record.should.have.property('address').eql(null);
+          record.should.have.property('phone').eql('+7 (000) 101-00-00');
+          record.should.have.property('inn').eql('0002');
+          done();
+        })
+        .catch(done);
     });
   });
 
   // delete
   describe('/DELETE Entity', () => {
-    it('Удаление Entity', async () => {
-      const record = new Entity({ name: 'Eitity 1', address: 'text2', phone: '+7 (000) 000-00-00' });
-      await record.save();
-      chai.request(server)
-        .delete(`/entity/${record.id}`)
-        .end(async (err, res) => {
+    it('Удаление Entity', (done) => {
+      new Promise((resolve) => {
+        const record = new Entity({ name: 'Eitity 1', address: 'text2', phone: '+7 (000) 666-00-00' });
+        resolve(record.save());
+      })
+
+        .then((record) => {
+          Entity.countDocuments((err, count) => {
+            console.log(count);
+          });
+          return record;
+        })
+
+        .then((record) => chai.request(server)
+          .delete(`/entity/${record.id}`))
+
+        .then((res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          const result = await Entity.findById(record.id);
-          should.equal(result, null);
-        });
+          // console.log(res.body.id);
+
+          return Entity.countDocuments();
+        })
+
+        .then((record) => {
+          should.equal(record, 0);
+          done();
+        })
+        .catch(done);
     });
   });
 });
