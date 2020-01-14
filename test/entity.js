@@ -86,7 +86,6 @@ describe('ENTITY', () => {
         });
         resolve(record.save());
       })
-
         .then((record) => chai.request(server)
           .put(`/entity/${record.id}`)
           .send({
