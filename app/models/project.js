@@ -3,7 +3,7 @@ const autoIncrement = require('mongoose-auto-increment');
 
 autoIncrement.initialize(mongoose.connection);
 
-const MeasureSchema = new mongoose.Schema({
+const ProjectSchema = new mongoose.Schema({
   _id: Number,
   name: String,
   object_code: Number,
@@ -68,6 +68,6 @@ const MeasureSchema = new mongoose.Schema({
   },
 });
 
-MeasureSchema.plugin(autoIncrement.plugin, { model: 'Measure', startAt: 1 });
+ProjectSchema.plugin(autoIncrement.plugin, { model: 'Project', startAt: 1 });
 
-module.exports = mongoose.model('Project', MeasureSchema);
+module.exports = mongoose.model('Project', ProjectSchema);
