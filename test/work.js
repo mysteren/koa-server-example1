@@ -1,4 +1,4 @@
-/* process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = 'test';
 
 // const mongoose = require('mongoose');
 const chai = require('chai');
@@ -17,10 +17,10 @@ describe('WORK:', () => {
   });
 
   // get all
-  describe('/GET works', () => {
-    it('Получить список всех Measure', (done) => {
+  describe('/GET work', () => {
+    it('Получить список всех Work', (done) => {
       chai.request(server)
-        .get('/measure')
+        .get('/work')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('array');
@@ -32,7 +32,7 @@ describe('WORK:', () => {
 
   // create
   describe('/POST work', () => {
-    it('Записать новый Entity', (done) => {
+    it('Записать новый Work', (done) => {
       const data = {
         name: 'построить дом',
       };
@@ -48,7 +48,7 @@ describe('WORK:', () => {
         });
     });
 
-    it('Записать новый не правильный Entity', (done) => {
+    it('Записать новый не правильный Work', (done) => {
       const data = {
       };
 
@@ -65,6 +65,79 @@ describe('WORK:', () => {
   });
 
   // update
+  describe('/PUT Work', () => {
+    it('обновление Work', (done) => {
+      new Promise((resolve) => {
+        const record = new Work({
+          _id: 1,
+          name: 'Work',
+          measure_id: 1,
+        });
+        resolve(record.save());
+      })
+        .then((record) => chai.request(server)
+          .put(`/work/${record.id}`)
+          .send({
+            name: 'Work 11',
+            measure_id: 1,
+          }))
+
+        .then((res) => {
+          if (res.status === 200) {
+            res.body.should.be.a('object');
+            res.body.should.have.property('name').eql('Work 11');
+            res.body.should.have.property('measure_id').eql(1);
+          } else {
+            res.should.have.status(204);
+          }
+          return Work.findById(1);
+        })
+        .then((record) => {
+          should.not.equal(record, null);
+          record.should.have.property('name').eql('Work 11');
+          record.should.have.property('measure_id').eql(1);
+          done();
+        })
+        .catch(done);
+    });
+  });
+
+  // delete
+  describe('/DELETE Work', () => {
+    it('Удаление Work', (done) => {
+      new Promise((resolve) => {
+        const record = new Work({ name: 'Work 2', measure_id: 1 });
+        resolve(record.save());
+      })
+
+        .then((record) => {
+          Work.countDocuments((err, count) => {
+            console.log(count);
+          });
+          return record;
+        })
+
+        .then((record) => chai.request(server)
+          .delete(`/work/${record.id}`))
+
+        .then((res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          // console.log(res.body.id);
+
+          return Work.countDocuments();
+        })
+
+        .then((record) => {
+          should.equal(record, 0);
+          done();
+        })
+        .catch(done);
+    });
+  });
+});
+
+/*   // update
   describe('/PUT work', () => {
     it('обновление Work', async () => {
       let record = new Work({ name: 'name 1.0' });
@@ -105,5 +178,4 @@ describe('WORK:', () => {
         });
     });
   });
-});
- */
+}); */

@@ -5,7 +5,7 @@ autoIncrement.initialize(mongoose.connection);
 
 const { ObjectId } = mongoose.Schema.Types;
 
-const MeasureSchema = new mongoose.Schema({
+const ProjectSchema = new mongoose.Schema({
   number: Number,
   name: String,
   object_code: Number,
@@ -71,6 +71,6 @@ const MeasureSchema = new mongoose.Schema({
   },
 });
 
-MeasureSchema.plugin(autoIncrement.plugin, { model: 'Project', field: 'number', startAt: 1 });
+ProjectSchema.plugin(autoIncrement.plugin, { model: 'Project', field: 'number', startAt: 1 });
 
-module.exports = mongoose.model('Project', MeasureSchema);
+module.exports = mongoose.model('Project', ProjectSchema);

@@ -25,6 +25,6 @@ const WorkSchema = new mongoose.Schema({
   },
 });
 
-WorkSchema.plugin(autoIncrement.plugin, { model: 'Entity', startAt: 1 });
+WorkSchema.plugin(autoIncrement.plugin, { model: 'Work', startAt: 1 });
 
 module.exports = mongoose.model('Work', WorkSchema);
