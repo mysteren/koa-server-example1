@@ -3,51 +3,54 @@ const autoIncrement = require('mongoose-auto-increment');
 
 autoIncrement.initialize(mongoose.connection);
 
+const { ObjectId } = mongoose.Schema.Types;
+
 const MeasureSchema = new mongoose.Schema({
-  _id: Number,
+  number: Number,
   name: String,
   object_code: Number,
   contract_number: Number,
   contract_date: Date,
-  ivestor_id: {
-    type: Number,
+  ivestor: {
+    type: ObjectId,
     required: false,
     ref: 'Entity',
   },
-  customer_id: {
-    type: Number,
+  customer: {
+    type: ObjectId,
     required: true,
     ref: 'Entity',
   },
-  contractor_id: {
-    type: Number,
+  contractor: {
+    type: ObjectId,
     required: true,
     ref: 'Entity',
   },
   subcontractors: [
     {
-      type: Number,
+      type: ObjectId,
       ref: 'Entity',
     },
   ],
   quality_control_services: [
     {
-      type: Number,
+      type: ObjectId,
       ref: 'Entity',
     },
   ],
   start_date: Date,
   end_date: Date,
-  workgroups: [{
+  sectors: [{
+    name: String,
+    description: String,
+  }],
+  work_groups: [{
     name: String,
     works: [{
-      work_id: {
-        type: Number,
-        ref: 'Work',
-      },
+      name: String,
       measures: [{
-        measure_id: {
-          type: Number,
+        measure: {
+          type: ObjectId,
           ref: 'Measure',
         },
         price: Number,
@@ -68,6 +71,6 @@ const MeasureSchema = new mongoose.Schema({
   },
 });
 
-MeasureSchema.plugin(autoIncrement.plugin, { model: 'Measure', startAt: 1 });
+MeasureSchema.plugin(autoIncrement.plugin, { model: 'Project', field: 'number', startAt: 1 });
 
 module.exports = mongoose.model('Project', MeasureSchema);

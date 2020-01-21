@@ -1,10 +1,10 @@
 const Router = require('koa-router');
-const Project = require('../models/project');
+const Act = require('../models/act');
 
 const router = new Router();
 
 // get all records
-router.get('/project', async (ctx) => {
+router.get('/act', async (ctx) => {
   const q = ctx.request.query;
   const filter = {};
   const options = {};
@@ -25,8 +25,8 @@ router.get('/project', async (ctx) => {
     filter._id = q.id;
   }
 
-  const list = await Project.find(filter, null, options).exec();
-  const count = await Project.count(filter, null, options).exec();
+  const list = await Act.find(filter, null, options).exec();
+  const count = await Act.countDocuments(filter, null, options).exec();
 
   ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
   ctx.set('X-Total-Count', count);
@@ -34,16 +34,16 @@ router.get('/project', async (ctx) => {
 });
 
 // get one record by id
-router.get('/project/:id', async (ctx) => {
-  const record = await Project.findById(ctx.params.id);
+router.get('/act/:id', async (ctx) => {
+  const record = await Act.findById(ctx.params.id);
   ctx.body = record;
 });
 
 // create new record
-router.post('/project', async (ctx) => {
+router.post('/act', async (ctx) => {
   try {
-    let record = new Project({ ...ctx.request.body });
-    record = await record.save();
+    const record = new Act({ ...ctx.request.body });
+    await record.save();
     ctx.body = record;
   } catch (err) {
     ctx.status = 500;
@@ -52,14 +52,14 @@ router.post('/project', async (ctx) => {
 });
 
 // update record
-router.put('/project/:id', async (ctx) => {
+router.put('/act/:id', async (ctx) => {
   try {
-    let record = await Project.findByIdAndUpdate(
+    let record = await Act.findByIdAndUpdate(
       ctx.params.id,
       { ...ctx.request.body },
       { useFindAndModify: false, runValidators: true },
     );
-    record = await Project.findById(ctx.params.id);
+    record = await Act.findById(ctx.params.id);
     ctx.body = record;
   } catch (err) {
     ctx.status = 500;
@@ -68,21 +68,8 @@ router.put('/project/:id', async (ctx) => {
 });
 
 // delete record
-router.delete('/project/:id', async (ctx) => {
-  const record = await Project.findByIdAndDelete(ctx.params.id);
-  ctx.body = record;
-});
-
-/**
- * Custom queries
- */
-
-// get project data
-router.get('/get-project-data/:id', async (ctx) => {
-  const record = await Project.findById(ctx.params.id)
-    .populate([
-      { path: 'work_groups.works.measures.measure' },
-    ]);
+router.delete('/act/:id', async (ctx) => {
+  const record = await Act.findByIdAndDelete(ctx.params.id);
   ctx.body = record;
 });
 

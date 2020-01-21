@@ -5,7 +5,7 @@ autoIncrement.initialize(mongoose.connection);
 mongoose.set('useFindAndModify', false);
 
 const EntitySchema = new mongoose.Schema({
-  _id: Number,
+  number: Number,
   name: { type: String, required: true },
   address: String,
   phone: String,
@@ -33,6 +33,6 @@ const EntitySchema = new mongoose.Schema({
   },
 });
 
-EntitySchema.plugin(autoIncrement.plugin, { model: 'Entity', startAt: 1 });
+EntitySchema.plugin(autoIncrement.plugin, { model: 'Entity', field: 'number', startAt: 1 });
 
 module.exports = mongoose.model('Entity', EntitySchema);

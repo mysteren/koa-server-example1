@@ -4,10 +4,14 @@ const autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose.connection);
 
 const MeasureSchema = new mongoose.Schema({
-  _id: Number,
+  number: Number,
   name: {
     type: String,
     required: true,
+  },
+  print: {
+    type: String,
+    default: '',
   },
 }, {
   versionKey: false,
@@ -21,6 +25,6 @@ const MeasureSchema = new mongoose.Schema({
   },
 });
 
-MeasureSchema.plugin(autoIncrement.plugin, { model: 'Measure', startAt: 1 });
+MeasureSchema.plugin(autoIncrement.plugin, { model: 'Measure', field: 'number', startAt: 1 });
 
 module.exports = mongoose.model('Measure', MeasureSchema);

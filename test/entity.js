@@ -127,12 +127,12 @@ describe('ENTITY', () => {
         resolve(record.save());
       })
 
-        .then((record) => {
+      /* .then((record) => {
           Entity.countDocuments((err, count) => {
             console.log(count);
           });
           return record;
-        })
+        }) */
 
         .then((record) => chai.request(server)
           .delete(`/entity/${record.id}`))

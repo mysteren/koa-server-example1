@@ -12,6 +12,7 @@ const entityRouter = require('./entity');
 const projectRouter = require('./project');
 const measureRouter = require('./measure');
 const workRouter = require('./work');
+const actRouter = require('./act');
 
 const router = combineRouters(
   mainRouter,
@@ -19,6 +20,7 @@ const router = combineRouters(
   projectRouter,
   measureRouter,
   workRouter,
+  actRouter,
 );
 
 
