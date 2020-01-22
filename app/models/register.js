@@ -5,13 +5,16 @@ autoIncrement.initialize(mongoose.connection);
 
 const { ObjectId, Mixed } = mongoose.Schema.Types;
 
-const ActSchema = new mongoose.Schema({
+const RegisterSchema = new mongoose.Schema({
   number: Number,
   date: {
     type: Date,
   },
-  start_work_date: Date,
-  end_work_date: Date,
+  // start_work_date: Date,
+  // end_work_date: Date,
+  sector: {
+    type: ObjectId,
+  },
   project: {
     type: ObjectId,
     required: false,
@@ -34,6 +37,6 @@ const ActSchema = new mongoose.Schema({
   },
 });
 
-ActSchema.plugin(autoIncrement.plugin, { model: 'Act', field: 'number', startAt: 1 });
+RegisterSchema.plugin(autoIncrement.plugin, { model: 'Register', field: 'number', startAt: 1 });
 
-module.exports = mongoose.model('Act', ActSchema);
+module.exports = mongoose.model('Register', RegisterSchema);
