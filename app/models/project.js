@@ -73,4 +73,27 @@ const ProjectSchema = new mongoose.Schema({
 
 ProjectSchema.plugin(autoIncrement.plugin, { model: 'Project', field: 'number', startAt: 1 });
 
+ProjectSchema.statics.dataModification = function dataModification(input) {
+  const data = input;
+
+  data.work_groups = data.work_groups.map((group) => ({
+    ...group,
+    works: group.works.map((work) => ({
+      ...work,
+      measures: work.measures.map((measure) => ({
+        ...measure,
+        summ: (measure.price && measure.count) ? measure.price * measure.count : null,
+      })),
+    })),
+  }));
+
+  return data;
+
+  /* return this.findByIdAndUpdate(
+    id,
+    { ...data },
+    { useFindAndModify: false, runValidators: true },
+  ); */
+};
+
 module.exports = mongoose.model('Project', ProjectSchema);

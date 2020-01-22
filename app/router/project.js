@@ -42,7 +42,7 @@ router.get('/project/:id', async (ctx) => {
 // create new record
 router.post('/project', async (ctx) => {
   try {
-    let record = new Project({ ...ctx.request.body });
+    let record = new Project({ ...Project.dataModification(ctx.request.body) });
     record = await record.save();
     ctx.body = record;
   } catch (err) {
@@ -53,15 +53,20 @@ router.post('/project', async (ctx) => {
 
 // update record
 router.put('/project/:id', async (ctx) => {
+
+  // Project.beforeSave(ctx.request.body);
+
   try {
-    let record = await Project.findByIdAndUpdate(
+    await Project.findByIdAndUpdate(
       ctx.params.id,
-      { ...ctx.request.body },
+      { ...Project.dataModification(ctx.request.body) },
       { useFindAndModify: false, runValidators: true },
     );
-    record = await Project.findById(ctx.params.id);
-    ctx.body = record;
+
+    // await Project.updateByData(ctx.params.id, ctx.request.body);
+    ctx.body = await Project.findById(ctx.params.id);
   } catch (err) {
+    console.log(err);
     ctx.status = 500;
     ctx.body = err;
   }
