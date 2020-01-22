@@ -10,11 +10,9 @@ const RegisterSchema = new mongoose.Schema({
   date: {
     type: Date,
   },
-  // start_work_date: Date,
-  // end_work_date: Date,
-  sector: {
+  sectors: [{
     type: ObjectId,
-  },
+  }],
   project: {
     type: ObjectId,
     required: false,
