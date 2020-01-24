@@ -17,8 +17,13 @@ const EntitySchema = new mongoose.Schema({
     position: String,
     documents: [{
       // _id: Number,
-      name: { type: String, required: true },
-      for_doc: [String],
+      name: {
+        type: String,
+        required: true,
+      },
+      for_doc: [{
+        type: String,
+      }],
     }],
   }],
 }, {

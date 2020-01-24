@@ -73,4 +73,26 @@ router.delete('/register/:id', async (ctx) => {
   ctx.body = record;
 });
 
+/**
+ * Custom queries
+ */
+
+// get project data
+router.get('/get-register-data/:id', async (ctx) => {
+  const record = await Register.findById(ctx.params.id)
+    .populate([
+      {
+        path: 'project',
+        populate: [
+          'contractor',
+          'customer',
+          'ivestor',
+        ],
+      },
+      // { path: 'project.contractor' },
+      // { path: 'project.work_groups.works' },
+    ]);
+  ctx.body = record;
+});
+
 module.exports = router;
