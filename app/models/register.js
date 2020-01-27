@@ -9,13 +9,14 @@ const RegisterSchema = new mongoose.Schema({
   number: Number,
   date: {
     type: Date,
+    required: true,
   },
   sectors: [{
     type: ObjectId,
   }],
   project: {
     type: ObjectId,
-    required: false,
+    required: true,
     ref: 'Project',
   },
   work: {
@@ -23,6 +24,7 @@ const RegisterSchema = new mongoose.Schema({
     require: true,
   },
   measures: Mixed,
+  act: Mixed,
 }, {
   versionKey: false,
   toJSON: {

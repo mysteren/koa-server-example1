@@ -89,8 +89,6 @@ router.get('/get-register-data/:id', async (ctx) => {
           'ivestor',
         ],
       },
-      // { path: 'project.contractor' },
-      // { path: 'project.work_groups.works' },
     ]);
   ctx.body = record;
 });
