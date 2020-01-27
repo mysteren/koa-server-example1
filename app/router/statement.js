@@ -1,5 +1,5 @@
 const Router = require('koa-router');
-const Register = require('../models/register');
+const Statement = require('../models/statement');
 
 const router = new Router();
 
@@ -25,8 +25,8 @@ router.get('/Statement', async (ctx) => {
     filter._id = q.id;
   }
 
-  const list = await Register.find(filter, null, options).exec();
-  const count = await Register.countDocuments(filter, null, options).exec();
+  const list = await Statement.find(filter, null, options).exec();
+  const count = await Statement.countDocuments(filter, null, options).exec();
 
   ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
   ctx.set('X-Total-Count', count);
@@ -34,15 +34,15 @@ router.get('/Statement', async (ctx) => {
 });
 
 // get one record by id
-router.get('/register/:id', async (ctx) => {
-  const record = await Register.findById(ctx.params.id);
+router.get('/statement/:id', async (ctx) => {
+  const record = await Statement.findById(ctx.params.id);
   ctx.body = record;
 });
 
 // create new record
-router.post('/register', async (ctx) => {
+router.post('/statement', async (ctx) => {
   try {
-    const record = new Register({ ...ctx.request.body });
+    const record = new Statement({ ...ctx.request.body });
     await record.save();
     ctx.body = record;
   } catch (err) {
@@ -52,14 +52,14 @@ router.post('/register', async (ctx) => {
 });
 
 // update record
-router.put('/register/:id', async (ctx) => {
+router.put('/statement/:id', async (ctx) => {
   try {
-    let record = await Register.findByIdAndUpdate(
+    let record = await Statement.findByIdAndUpdate(
       ctx.params.id,
       { ...ctx.request.body },
       { useFindAndModify: false, runValidators: true },
     );
-    record = await Register.findById(ctx.params.id);
+    record = await Statement.findById(ctx.params.id);
     ctx.body = record;
   } catch (err) {
     ctx.status = 500;
@@ -68,8 +68,8 @@ router.put('/register/:id', async (ctx) => {
 });
 
 // delete record
-router.delete('/register/:id', async (ctx) => {
-  const record = await Register.findByIdAndDelete(ctx.params.id);
+router.delete('/statement/:id', async (ctx) => {
+  const record = await Statement.findByIdAndDelete(ctx.params.id);
   ctx.body = record;
 });
 
@@ -78,8 +78,8 @@ router.delete('/register/:id', async (ctx) => {
  */
 
 // get project data
-router.get('/get-register-data/:id', async (ctx) => {
-  const record = await Register.findById(ctx.params.id)
+router.get('/get-statement-data/:id', async (ctx) => {
+  const record = await Statement.findById(ctx.params.id)
     .populate([
       {
         path: 'project',

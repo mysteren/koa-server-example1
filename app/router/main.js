@@ -12,6 +12,7 @@ const entityRouter = require('./entity');
 const projectRouter = require('./project');
 const measureRouter = require('./measure');
 const workRouter = require('./work');
+const statementRouter = require('./statement');
 const registerRouter = require('./register');
 
 const router = combineRouters(
@@ -20,6 +21,7 @@ const router = combineRouters(
   projectRouter,
   measureRouter,
   workRouter,
+  statementRouter,
   registerRouter,
 );
 

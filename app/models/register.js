@@ -2,29 +2,18 @@ const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
 
 autoIncrement.initialize(mongoose.connection);
-
-const { ObjectId, Mixed } = mongoose.Schema.Types;
+mongoose.set('useFindAndModify', false);
 
 const RegisterSchema = new mongoose.Schema({
   number: Number,
-  date: {
+  start_date: {
     type: Date,
     required: true,
   },
-  sectors: [{
-    type: ObjectId,
-  }],
-  project: {
-    type: ObjectId,
+  end_date: {
+    type: Date,
     required: true,
-    ref: 'Project',
   },
-  work: {
-    type: ObjectId,
-    require: true,
-  },
-  measures: Mixed,
-  act: Mixed,
 }, {
   versionKey: false,
   toJSON: {
