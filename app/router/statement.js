@@ -87,6 +87,7 @@ router.get('/get-statement-data/:id', async (ctx) => {
           'contractor',
           'customer',
           'ivestor',
+          'work_groups.works.measures.measure',
         ],
       },
     ]);

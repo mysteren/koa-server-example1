@@ -1,10 +1,11 @@
 const Router = require('koa-router');
 const Register = require('../models/register');
+const Statement = require('../models/statement');
 
 const router = new Router();
 
 // get all records
-router.get('/Statement', async (ctx) => {
+router.get('/register', async (ctx) => {
   const q = ctx.request.query;
   const filter = {};
   const options = {};
@@ -79,7 +80,10 @@ router.delete('/register/:id', async (ctx) => {
 
 // get project data
 router.get('/get-register-data/:id', async (ctx) => {
-  const record = await Register.findById(ctx.params.id)
+
+  const output = {};
+
+  output.register = await Register.findById(ctx.params.id)
     .populate([
       {
         path: 'project',
@@ -87,10 +91,19 @@ router.get('/get-register-data/:id', async (ctx) => {
           'contractor',
           'customer',
           'ivestor',
+          'subcontractors',
+          'quality_control_services',
+          'work_groups.works.measures.measure',
         ],
       },
     ]);
-  ctx.body = record;
+
+  console.log(output.register.project._id);
+
+  if (output.register && output.register.project) {
+    output.statements = await Statement.find({ project: output.register.project._id });
+  }
+  ctx.body = output;
 });
 
 module.exports = router;

@@ -11,6 +11,12 @@ const StatementSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  start_work_date: {
+    type: Date,
+  },
+  end_work_date: {
+    type: Date,
+  },
   sectors: [{
     type: ObjectId,
   }],

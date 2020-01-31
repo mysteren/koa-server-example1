@@ -4,6 +4,8 @@ const autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose.connection);
 mongoose.set('useFindAndModify', false);
 
+const { ObjectId } = mongoose.Schema.Types;
+
 const RegisterSchema = new mongoose.Schema({
   number: Number,
   start_date: {
@@ -13,6 +15,11 @@ const RegisterSchema = new mongoose.Schema({
   end_date: {
     type: Date,
     required: true,
+  },
+  project: {
+    type: ObjectId,
+    required: true,
+    ref: 'Project',
   },
 }, {
   versionKey: false,
