@@ -126,7 +126,12 @@ describe('PROJECT:', () => {
     it('Удаление Project', (done) => {
       new Promise((resolve) => {
         const record = new Project({
-          name: 'Контракт №233332', object_code: 10023, contract_number: 23, contract_date: null, customer_id: 10, contractor_id: 10 
+          name: 'Контракт №233332',
+          object_code: 10023,
+          contract_number: 23,
+          contract_date: null,
+          customer_id: 10,
+          contractor_id: 10,
         });
         resolve(record.save());
       })

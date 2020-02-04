@@ -53,9 +53,7 @@ router.post('/project', async (ctx) => {
 
 // update record
 router.put('/project/:id', async (ctx) => {
-
   // Project.beforeSave(ctx.request.body);
-
   try {
     await Project.findByIdAndUpdate(
       ctx.params.id,
@@ -90,5 +88,18 @@ router.get('/get-project-data/:id', async (ctx) => {
     ]);
   ctx.body = record;
 });
+
+router.get('/get-project-daily-summary/:id', async (ctx) => {
+  console.log.log('sdfsdfds');
+
+  const output = {};
+
+  output.record = await Project.findById(ctx.params.id)
+    .populate([
+      { path: 'work_groups.works.measures.measure' },
+    ]);
+  ctx.body = output;
+});
+
 
 module.exports = router;
