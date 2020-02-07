@@ -132,7 +132,11 @@ router.get('/get-project-daily-summary/:id', async (ctx) => {
 							const dateKey = dateToString(statement.date);
 							const date = new Date(dateKey);
 							measure.totalCount += value;
-							measure.dates[dateKey] = value;
+							if (measure.dates[dateKey]) {
+								measure.dates[dateKey] += value;
+							} else {
+								measure.dates[dateKey] = value;
+							}
 							if (date <= endDate && date >= startDate) {
 								measure.rangeCount += value;
 							}

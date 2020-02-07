@@ -20,10 +20,7 @@ module.exports = {
     // "no-console": "off",
     "class-methods-use-this": 0,
     "import/prefer-default-export": 0,
-    "camelcase": [
-        "error", 
-        {"ignoreDestructuring": true}
-    ],
+    "camelcase": 0,
     "no-underscore-dangle":  [
       "error", { 
         "allow": [
@@ -35,6 +32,7 @@ module.exports = {
         ]
       }
     ],
+
     "no-restricted-syntax": [
       "error",
       //"ForInStatement",
