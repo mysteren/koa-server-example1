@@ -15,8 +15,8 @@ module.exports = {
     ecmaVersion: 2018,
   },
   rules: {
-    "indent": [2, "tab", { "SwitchCase": 1, "VariableDeclarator": 1 }],
-    "no-tabs": 0,
+    // "indent": [2, "tab", { "SwitchCase": 1, "VariableDeclarator": 1 }],
+    // "no-tabs": 0,
     // "no-console": "off",
     "class-methods-use-this": 0,
     "import/prefer-default-export": 0,

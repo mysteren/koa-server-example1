@@ -5,7 +5,7 @@ const config = require('config');
 const mainRouter = new Router();
 
 mainRouter.get('/', async (ctx) => {
-	ctx.body = config.app;
+  ctx.body = config.app;
 });
 
 const entityRouter = require('./entity');
@@ -15,12 +15,12 @@ const statementRouter = require('./statement');
 const registerRouter = require('./register');
 
 const router = combineRouters(
-	mainRouter,
-	entityRouter,
-	projectRouter,
-	measureRouter,
-	statementRouter,
-	registerRouter,
+  mainRouter,
+  entityRouter,
+  projectRouter,
+  measureRouter,
+  statementRouter,
+  registerRouter,
 );
 
 module.exports = router;

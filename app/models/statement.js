@@ -30,7 +30,7 @@ const StatementSchema = new mongoose.Schema({
     require: true,
   },
   measures: Mixed,
-  act: Mixed,
+  act_hidden_work: Mixed,
 }, {
   versionKey: false,
   toJSON: {
