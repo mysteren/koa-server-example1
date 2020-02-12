@@ -86,6 +86,8 @@ router.get('/get-statement-data/:id', async (ctx) => {
         populate: [
           'contractor',
           'customer',
+          'subcontractors',
+          'quality_control_services',
           'ivestor',
           'work_groups.works.measures.measure',
         ],
