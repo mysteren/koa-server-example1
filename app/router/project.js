@@ -66,7 +66,6 @@ router.put('/project/:id', async (ctx) => {
     // await Project.updateByData(ctx.params.id, ctx.request.body);
     ctx.body = await Project.findById(ctx.params.id);
   } catch (err) {
-    console.log(err);
     ctx.status = 500;
     ctx.body = err;
   }
@@ -115,11 +114,6 @@ router.get('/project-list-for-statement', async (ctx) => {
 
   const count = await Project.count(filter, null, options).exec();
   const list = await Project.find(filter, null, options).populate([
-    // 'contractor',
-    // 'customer',
-    // 'ivestor',
-    // 'subcontractors',
-    // 'quality_control_services',
     'work_groups.works.measures.measure',
   ]);
 
@@ -132,8 +126,6 @@ router.get('/project-list-for-statement', async (ctx) => {
 router.get('/get-project-daily-summary/:id', async (ctx) => {
   const startDate = new Date(ctx.request.query.startDate);
   const endDate = new Date(ctx.request.query.endDate);
-
-  console.log(startDate, endDate);
 
   const output = {};
 
@@ -188,6 +180,5 @@ router.get('/get-project-daily-summary/:id', async (ctx) => {
 
   ctx.body = output;
 });
-
 
 module.exports = router;

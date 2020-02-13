@@ -1,11 +1,11 @@
 const Router = require('koa-router');
-const Register = require('../models/register');
+const DocKS3 = require('../models/docks3');
 const Statement = require('../models/statement');
 
 const router = new Router();
 
 // get all records
-router.get('/register', async (ctx) => {
+router.get('/docks3', async (ctx) => {
   const q = ctx.request.query;
   const filter = {};
   const options = {};
@@ -26,8 +26,8 @@ router.get('/register', async (ctx) => {
     filter._id = q.id;
   }
 
-  const list = await Register.find(filter, null, options).exec();
-  const count = await Register.countDocuments(filter, null, options).exec();
+  const list = await DocKS3.find(filter, null, options).exec();
+  const count = await DocKS3.countDocuments(filter, null, options).exec();
 
   ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
   ctx.set('X-Total-Count', count);
@@ -35,15 +35,15 @@ router.get('/register', async (ctx) => {
 });
 
 // get one record by id
-router.get('/register/:id', async (ctx) => {
-  const record = await Register.findById(ctx.params.id);
+router.get('/docks3/:id', async (ctx) => {
+  const record = await DocKS3.findById(ctx.params.id);
   ctx.body = record;
 });
 
 // create new record
-router.post('/register', async (ctx) => {
+router.post('/docks3', async (ctx) => {
   try {
-    const record = new Register({ ...ctx.request.body });
+    const record = new DocKS3({ ...ctx.request.body });
     await record.save();
     ctx.body = record;
   } catch (err) {
@@ -53,14 +53,14 @@ router.post('/register', async (ctx) => {
 });
 
 // update record
-router.put('/register/:id', async (ctx) => {
+router.put('/docks3/:id', async (ctx) => {
   try {
-    let record = await Register.findByIdAndUpdate(
+    let record = await DocKS3.findByIdAndUpdate(
       ctx.params.id,
       { ...ctx.request.body },
       { useFindAndModify: false, runValidators: true },
     );
-    record = await Register.findById(ctx.params.id);
+    record = await DocKS3.findById(ctx.params.id);
     ctx.body = record;
   } catch (err) {
     ctx.status = 500;
@@ -69,8 +69,8 @@ router.put('/register/:id', async (ctx) => {
 });
 
 // delete record
-router.delete('/register/:id', async (ctx) => {
-  const record = await Register.findByIdAndDelete(ctx.params.id);
+router.delete('/docks3/:id', async (ctx) => {
+  const record = await DocKS3.findByIdAndDelete(ctx.params.id);
   ctx.body = record;
 });
 
@@ -79,14 +79,10 @@ router.delete('/register/:id', async (ctx) => {
  */
 
 // get project data
-router.get('/get-register-data/:id', async (ctx) => {
-  const output = {
-    register: null,
-    statements: [],
-  };
+router.get('/get-docks3-data/:id', async (ctx) => {
+  const output = {};
 
-
-  const register = await Register.findById(ctx.params.id)
+  output.docks3 = await DocKS3.findById(ctx.params.id)
     .populate([
       {
         path: 'project',
@@ -101,15 +97,9 @@ router.get('/get-register-data/:id', async (ctx) => {
       },
     ]);
 
-  if (register) {
-    output.register = register;
-    if (register.project) {
-      output.statements = await Statement.find({
-        project: register.project._id,
-        date: { $gte: register.start_date, $lte: register.end_date },
-      });
-    }
-  }
+  // if (output.register && output.register.project) {
+  //   output.statements = await Statement.find({ project: output.register.project._id });
+  // }
   ctx.body = output;
 });
 

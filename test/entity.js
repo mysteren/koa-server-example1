@@ -38,7 +38,7 @@ describe('ENTITY', () => {
         address: 'string',
         phone: '+7 (000) 000-00-00',
         inn: '0010101',
-        opko: '00001010',
+        okpo: '00001010',
       };
 
       chai.request(server)
@@ -59,7 +59,7 @@ describe('ENTITY', () => {
         address: 'string',
         phone: '+7 (000) 000-00-00',
         inn: '0010101',
-        opko: '00001010',
+        okpo: '00001010',
       };
 
       chai.request(server)

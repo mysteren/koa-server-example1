@@ -13,6 +13,8 @@ const projectRouter = require('./project');
 const measureRouter = require('./measure');
 const statementRouter = require('./statement');
 const registerRouter = require('./register');
+const docKS2Router = require('./docks2');
+const docKS3Router = require('./docks3');
 
 const router = combineRouters(
   mainRouter,
@@ -21,6 +23,8 @@ const router = combineRouters(
   measureRouter,
   statementRouter,
   registerRouter,
+  docKS2Router,
+  docKS3Router,
 );
 
 module.exports = router;

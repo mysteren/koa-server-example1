@@ -10,7 +10,7 @@ const EntitySchema = new mongoose.Schema({
   address: String,
   phone: String,
   inn: String,
-  opko: String,
+  okpo: String,
   members: [{
     // _id: Number,
     name: { type: String, required: true },
