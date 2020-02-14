@@ -81,7 +81,7 @@ router.delete('/project/:id', async (ctx) => {
  * Custom queries
  */
 
-// get project data
+// GET:get-project-data
 router.get('/get-project-data/:id', async (ctx) => {
   const record = await Project.findById(ctx.params.id)
     .populate([
@@ -122,7 +122,7 @@ router.get('/project-list-for-statement', async (ctx) => {
   ctx.body = list;
 });
 
-
+// GET:get-project-daily-summary
 router.get('/get-project-daily-summary/:id', async (ctx) => {
   const startDate = new Date(ctx.request.query.startDate);
   const endDate = new Date(ctx.request.query.endDate);

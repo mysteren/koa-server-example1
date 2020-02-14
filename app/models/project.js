@@ -8,8 +8,7 @@ const { ObjectId } = mongoose.Schema.Types;
 const ProjectSchema = new mongoose.Schema({
   number: Number,
   name: String,
-  object_code: Number,
-  contract_number: Number,
+  object_code: String,
   contract_date: Date,
   investor: {
     type: ObjectId,
@@ -59,6 +58,14 @@ const ProjectSchema = new mongoose.Schema({
       }],
     }],
   }],
+  tax: {
+    type: Number,
+    default: 0.2,
+  },
+  reserve_summ: {
+    type: Number,
+    default: 0.05,
+  },
 }, {
   versionKey: false,
   toJSON: {

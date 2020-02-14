@@ -36,7 +36,6 @@ describe('PROJECT:', () => {
       const data = {
         name: 'Контракт №23',
         object_code: 10023,
-        contract_number: 23,
         contract_date: '2019-12-19T00:00:00.000Z',
         customer_id: 12,
         contractor_id: 12,
@@ -57,7 +56,6 @@ describe('PROJECT:', () => {
       const data = {
         name: 'Контракт №23',
         object_code: 10023,
-        contract_number: 23,
         contract_date: '2019-12-19T00:00:00.000Z',
       };
       chai.request(server)
@@ -82,7 +80,6 @@ describe('PROJECT:', () => {
           _id: 1,
           name: 'Контракт №23',
           object_code: 10023,
-          contract_number: 23,
           contract_date: '2019-12-19T00:00:00.000Z',
           customer_id: 11,
           contractor_id: 11,
@@ -94,7 +91,6 @@ describe('PROJECT:', () => {
           .send({
             name: 'Контракт №233332',
             object_code: 10023,
-            contract_number: 23,
             contract_date: null,
             customer_id: 10,
             contractor_id: 10,
@@ -128,7 +124,6 @@ describe('PROJECT:', () => {
         const record = new Project({
           name: 'Контракт №233332',
           object_code: 10023,
-          contract_number: 23,
           contract_date: null,
           customer_id: 10,
           contractor_id: 10,
@@ -161,69 +156,3 @@ describe('PROJECT:', () => {
     });
   });
 });
-
-/* // update
-  describe('/PUT project', () => {
-    it('обновление Project', async () => {
-      let record = new Project({
-        name: 'Контракт №23',
-        object_code: 10023,
-        contract_number: 23,
-        contract_date: '2019-12-19T00:00:00.000Z',
-        customer_id: 11,
-        contractor_id: 11,
-      });
-      record = await record.save();
-      chai.request(server)
-        .put(`/project/${record.id}`)
-        .send({
-          name: 'Контракт №23',
-          object_code: 10023,
-          contract_number: 23,
-          contract_date: '2019-12-19T00:00:00.000Z',
-          customer_id: 12,
-          contractor_id: 12,
-        })
-        .end(async (err, res) => {
-          if (res.status === 200) {
-            res.body.should.be.a('object');
-            res.body.should.have.property('name').eql('Контракт №23');
-            res.body.should.have.property('customer_id').eql(12);
-            res.body.should.have.property('contractor_id').eql(12);
-          } else {
-            res.should.have.status(204);
-          }
-
-          const dbRecord = await Project.findById(record.id);
-
-          chai.expect(dbRecord).should.be.a('oobject');
-          dbRecord.should.have.property('customer_id').eql(12);
-          dbRecord.should.have.property('contractor_id').eql(12);
-        });
-    });
-  });
-
-  // delete
-  describe('/DELETE project', () => {
-    it('Удаление project', async () => {
-      const record = new Project({
-        name: 'Контракт №23',
-        object_code: 10023,
-        contract_number: 23,
-        contract_date: '2019-12-19T00:00:00.000Z',
-        customer_id: 12,
-        contractor_id: 12,
-      });
-      await record.save();
-      chai.request(server)
-        .delete(`/project/${record.id}`)
-        .end(async (err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          const result = await Project.findById(record.id);
-          should.equal(result, null);
-        });
-    });
-  });
-});
- */
