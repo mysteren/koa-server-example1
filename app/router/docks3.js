@@ -80,9 +80,13 @@ router.delete('/docks3/:id', async (ctx) => {
 
 // get project data
 router.get('/get-docks3-data/:id', async (ctx) => {
-  const output = {};
+  const output = {
+    docks3: null,
+    // project: null,
+    workStatements: {},
+  };
 
-  output.docks3 = await DocKS3.findById(ctx.params.id)
+  const docks3 = await DocKS3.findById(ctx.params.id)
     .populate([
       {
         path: 'project',
@@ -96,6 +100,43 @@ router.get('/get-docks3-data/:id', async (ctx) => {
         ],
       },
     ]);
+
+  if (docks3) {
+    output.docks3 = docks3;
+    if (docks3.project) {
+      const statements = await Statement.find({
+        project: docks3.project._id,
+        date: { $gte: docks3.start_date, $lte: docks3.end_date },
+      });
+
+      if (statements) {
+        const works = {};
+        for (const statement of statements) {
+          if (works[statement.work] === undefined) {
+            works[statement.work] = {};
+          }
+
+          const work = works[statement.work];
+          const { measures } = statement;
+          if (measures) {
+            for (const mKey in measures) {
+              if ({}.hasOwnProperty.call(measures, mKey)) {
+                if (work[mKey] === undefined) {
+                  work[mKey] = {
+                    count: 0,
+                  };
+                }
+                const measure = work[mKey];
+                const value = parseFloat(measures[mKey]);
+                measure.count += value;
+              }
+            }
+          }
+        }
+        output.workStatements = works;
+      }
+    }
+  }
 
   // if (output.register && output.register.project) {
   //   output.statements = await Statement.find({ project: output.register.project._id });
