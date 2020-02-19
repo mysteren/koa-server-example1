@@ -32,7 +32,7 @@ const StatementSchema = new mongoose.Schema({
   measures: Mixed,
   act_hidden_work: Mixed,
 }, {
-  versionKey: false,
+  timestamps: true,
   toJSON: {
     transform: (doc, ret) => {
       const data = ret;

@@ -4,8 +4,6 @@ const config = require('config');
 let dbc = config.mongodb;
 let connectUrl;
 
-console.log(config.util.getEnv('NODE_ENV'));
-
 if (config.util.getEnv('NODE_ENV') === 'test') {
   dbc = config.mongodb_test;
 }
@@ -18,20 +16,26 @@ if (dbc.user && dbc.pass) {
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect(connectUrl, { useNewUrlParser: true }).catch((e) => {
+mongoose.connect(connectUrl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).catch((e) => {
+  // eslint-disable-next-line no-console
   console.error(e);
 });
 
-const db = mongoose.connection;
+/* const db = mongoose.connection;
 
-db.on('connected', () => {
-  console.log(`Db Connection open on ${connectUrl}`);
-});
+if (config.util.getEnv('NODE_ENV') === 'development') {
+  db.on('connected', () => {
+    console.log(`Db Connection open on ${connectUrl}`);
+  });
 
-db.on('error', (e) => {
-  console.error(e);
-});
+  db.on('error', (e) => {
+    console.error(e);
+  });
 
-db.on('disconnected', () => {
-  console.log('db connection disconnected');
-});
+  db.on('disconnected', () => {
+    console.log('db connection disconnected');
+  });
+} */

@@ -67,7 +67,7 @@ const ProjectSchema = new mongoose.Schema({
     default: 0.05,
   },
 }, {
-  versionKey: false,
+  timestamps: true,
   toJSON: {
     transform: (doc, ret) => {
       const data = ret;

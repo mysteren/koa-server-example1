@@ -27,7 +27,7 @@ const EntitySchema = new mongoose.Schema({
     }],
   }],
 }, {
-  versionKey: false,
+  timestamps: true,
   toJSON: {
     transform: (doc, ret) => {
       const data = ret;

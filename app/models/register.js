@@ -22,7 +22,7 @@ const RegisterSchema = new mongoose.Schema({
     ref: 'Project',
   },
 }, {
-  versionKey: false,
+  timestamps: true,
   toJSON: {
     transform: (doc, ret) => {
       const data = ret;

@@ -14,7 +14,7 @@ const MeasureSchema = new mongoose.Schema({
     default: '',
   },
 }, {
-  versionKey: false,
+  timestamps: true,
   toJSON: {
     transform: (doc, ret) => {
       const data = ret;

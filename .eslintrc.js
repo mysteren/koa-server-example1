@@ -32,7 +32,7 @@ module.exports = {
         ]
       }
     ],
-
+    "no-underscore-dangle": 0,
     "no-restricted-syntax": [
       "error",
       //"ForInStatement",
