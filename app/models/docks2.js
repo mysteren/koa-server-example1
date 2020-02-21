@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
+const { ObjectExtend } = require('./../lib/functions');
 
 autoIncrement.initialize(mongoose.connection);
 mongoose.set('useFindAndModify', false);
@@ -25,6 +26,11 @@ const DocKS2Schema = new mongoose.Schema({
     required: true,
     ref: 'Project',
   },
+  user: {
+    type: ObjectId,
+    required: true,
+    ref: 'User',
+  },
 }, {
   timestamps: true,
   toJSON: {
@@ -36,6 +42,10 @@ const DocKS2Schema = new mongoose.Schema({
     },
   },
 });
+
+DocKS2Schema.methods.load = function load(input) {
+  return ObjectExtend(this, input);
+};
 
 DocKS2Schema.plugin(autoIncrement.plugin, { model: 'DocKS2', field: 'number', startAt: 1 });
 

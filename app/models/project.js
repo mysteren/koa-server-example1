@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
+const { ObjectExtend } = require('./../lib/functions');
 
 autoIncrement.initialize(mongoose.connection);
 
@@ -66,6 +67,11 @@ const ProjectSchema = new mongoose.Schema({
     type: Number,
     default: 0.05,
   },
+  user: {
+    type: ObjectId,
+    required: true,
+    ref: 'User',
+  },
 }, {
   timestamps: true,
   toJSON: {
@@ -78,9 +84,7 @@ const ProjectSchema = new mongoose.Schema({
   },
 });
 
-ProjectSchema.plugin(autoIncrement.plugin, { model: 'Project', field: 'number', startAt: 1 });
-
-ProjectSchema.statics.dataModification = function dataModification(input) {
+const dataModification = (input) => {
   const data = input;
   data.work_groups = Array.isArray(data.work_groups) ? data.work_groups.map((group) => ({
     ...group,
@@ -94,5 +98,11 @@ ProjectSchema.statics.dataModification = function dataModification(input) {
   })) : [];
   return data;
 };
+
+ProjectSchema.methods.load = function load(input) {
+  return ObjectExtend(this, dataModification(input));
+};
+
+ProjectSchema.plugin(autoIncrement.plugin, { model: 'Project', field: 'number', startAt: 1 });
 
 module.exports = mongoose.model('Project', ProjectSchema);

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
+const { ObjectExtend } = require('./../lib/functions');
 
 autoIncrement.initialize(mongoose.connection);
 
@@ -31,6 +32,11 @@ const StatementSchema = new mongoose.Schema({
   },
   measures: Mixed,
   act_hidden_work: Mixed,
+  user: {
+    type: ObjectId,
+    required: true,
+    ref: 'User',
+  },
 }, {
   timestamps: true,
   toJSON: {
@@ -42,6 +48,10 @@ const StatementSchema = new mongoose.Schema({
     },
   },
 });
+
+StatementSchema.methods.load = function load(input) {
+  return ObjectExtend(this, input);
+};
 
 StatementSchema.plugin(autoIncrement.plugin, { model: 'Statement', field: 'number', startAt: 1 });
 

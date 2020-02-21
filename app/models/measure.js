@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
+const { ObjectExtend } = require('./../lib/functions');
 
 autoIncrement.initialize(mongoose.connection);
 
@@ -12,6 +13,7 @@ const MeasureSchema = new mongoose.Schema({
   print: {
     type: String,
     default: '',
+    required: true,
   },
 }, {
   timestamps: true,
@@ -24,6 +26,11 @@ const MeasureSchema = new mongoose.Schema({
     },
   },
 });
+
+MeasureSchema.methods.load = function load(input) {
+  return ObjectExtend(this, input);
+};
+
 
 MeasureSchema.plugin(autoIncrement.plugin, { model: 'Measure', field: 'number', startAt: 1 });
 

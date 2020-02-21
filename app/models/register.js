@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
+const { ObjectExtend } = require('./../lib/functions');
 
 autoIncrement.initialize(mongoose.connection);
 mongoose.set('useFindAndModify', false);
@@ -21,6 +22,11 @@ const RegisterSchema = new mongoose.Schema({
     required: true,
     ref: 'Project',
   },
+  user: {
+    type: ObjectId,
+    required: true,
+    ref: 'User',
+  },
 }, {
   timestamps: true,
   toJSON: {
@@ -32,6 +38,10 @@ const RegisterSchema = new mongoose.Schema({
     },
   },
 });
+
+RegisterSchema.methods.load = function load(input) {
+  return ObjectExtend(this, input);
+};
 
 RegisterSchema.plugin(autoIncrement.plugin, { model: 'Register', field: 'number', startAt: 1 });
 

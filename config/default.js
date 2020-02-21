@@ -1,7 +1,7 @@
 module.exports = {
   app: {
     name: 'dordoc-api',
-    version: '0.2.1',
+    version: process.env.npm_package_version,
   },
   session: {
     key: 'koa:sess', /** (string) cookie key (default is koa:sess) */

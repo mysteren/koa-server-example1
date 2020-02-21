@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');
+const { ObjectExtend } = require('./../lib/functions');
 
 autoIncrement.initialize(mongoose.connection);
 mongoose.set('useFindAndModify', false);
@@ -12,11 +13,9 @@ const EntitySchema = new mongoose.Schema({
   inn: String,
   okpo: String,
   members: [{
-    // _id: Number,
     name: { type: String, required: true },
     position: String,
     documents: [{
-      // _id: Number,
       name: {
         type: String,
         required: true,
@@ -37,6 +36,10 @@ const EntitySchema = new mongoose.Schema({
     },
   },
 });
+
+EntitySchema.methods.load = function load(input) {
+  return ObjectExtend(this, input);
+};
 
 EntitySchema.plugin(autoIncrement.plugin, { model: 'Entity', field: 'number', startAt: 1 });
 
