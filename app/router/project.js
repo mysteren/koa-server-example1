@@ -3,7 +3,6 @@ const passport = require('koa-passport');
 const Project = require('../models/project');
 const Statement = require('../models/statement');
 const { dateToString } = require('../lib/format');
-const { isAdmin } = require('../lib/auth');
 
 const router = new Router();
 
@@ -12,12 +11,10 @@ router.get('/project',
   passport.authenticate('jwt'),
   async (ctx) => {
     const q = ctx.request.query;
-    const filter = {};
+    const filter = {
+      user: ctx.state.user.id,
+    };
     const options = {};
-
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
 
     if (q._sort) {
       const sort = q._sort === 'id' ? '_id' : q._sort;
@@ -49,10 +46,8 @@ router.get('/project/:id',
   async (ctx) => {
     const filter = {
       _id: ctx.params.id,
+      user: ctx.state.user.id,
     };
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
     const record = await Project.findOne(filter);
     ctx.body = record;
   });
@@ -73,10 +68,8 @@ router.put('/project/:id',
   async (ctx) => {
     const filter = {
       _id: ctx.params.id,
+      user: ctx.state.user.id,
     };
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
     let record = await Project.findOne(filter);
     if (!record) {
       ctx.throw(404, 'Запись не найдена');
@@ -92,10 +85,8 @@ router.delete('/project/:id',
   async (ctx) => {
     const filter = {
       _id: ctx.params.id,
+      user: ctx.state.user.id,
     };
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
     const record = await Project.findOne(filter);
     if (!record) {
       ctx.throw(404, 'Запись не найдена');
@@ -114,10 +105,8 @@ router.get('/get-project-data/:id',
   async (ctx) => {
     const filter = {
       _id: ctx.params.id,
+      user: ctx.state.user.id,
     };
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
     const record = await Project.findOne(filter)
       .populate([
         { path: 'work_groups.works.measures.measure' },
@@ -130,12 +119,10 @@ router.get('/project-list-for-statement',
   passport.authenticate('jwt'),
   async (ctx) => {
     const q = ctx.request.query;
-    const filter = {};
+    const filter = {
+      user: ctx.state.user.id,
+    };
     const options = {};
-
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
 
     if (q._sort) {
       const sort = q._sort === 'id' ? '_id' : q._sort;
@@ -174,10 +161,8 @@ router.get('/get-project-daily-summary/:id',
 
     const filter = {
       _id: ctx.params.id,
+      user: ctx.state.user.id,
     };
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
 
     output.project = await Project.findOne(filter)
       .populate([

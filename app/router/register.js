@@ -2,7 +2,6 @@ const Router = require('koa-router');
 const passport = require('koa-passport');
 const Register = require('../models/register');
 const Statement = require('../models/statement');
-const { isAdmin } = require('../lib/auth');
 
 const router = new Router();
 
@@ -11,12 +10,10 @@ router.get('/register',
   passport.authenticate('jwt'),
   async (ctx) => {
     const q = ctx.request.query;
-    const filter = {};
+    const filter = {
+      user: ctx.state.user.id,
+    };
     const options = {};
-
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
 
     if (q._sort) {
       const sort = q._sort === 'id' ? '_id' : q._sort;
@@ -46,10 +43,10 @@ router.get('/register',
 router.get('/register/:id',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const filter = { _id: ctx.params.id };
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
+    const filter = {
+      _id: ctx.params.id,
+      user: ctx.state.user.id,
+    };
     const record = await Register.findOne(filter);
     ctx.body = record;
   });
@@ -68,10 +65,10 @@ router.post('/register',
 router.put('/register/:id',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const filter = { _id: ctx.params.id };
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
+    const filter = {
+      _id: ctx.params.id,
+      user: ctx.state.user.id,
+    };
     let record = await Register.findOne(filter);
     if (!record) {
       ctx.throw(404, 'Запись не найдена');
@@ -87,10 +84,8 @@ router.delete('/register/:id',
   async (ctx) => {
     const filter = {
       _id: ctx.params.id,
+      user: ctx.state.user.id,
     };
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
     const record = await Register.findOne(filter);
     if (!record) {
       ctx.throw(404, 'Запись не найдена');
@@ -113,10 +108,8 @@ router.get('/get-register-data/:id',
     };
     const filter = {
       _id: ctx.params.id,
+      user: ctx.state.user.id,
     };
-    if (!isAdmin(ctx)) {
-      filter.user = ctx.state.user.id;
-    }
     const register = await Register.findOne(filter)
       .populate([
         {
