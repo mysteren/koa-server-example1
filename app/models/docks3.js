@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
+const AutoIncrementFactory = require('mongoose-sequence');
 const { ObjectExtend } = require('./../lib/functions');
 
-autoIncrement.initialize(mongoose.connection);
-mongoose.set('useFindAndModify', false);
+const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 
 const { ObjectId } = mongoose.Schema.Types;
 
@@ -47,6 +46,10 @@ DocKS3Schema.methods.load = function load(input) {
   return ObjectExtend(this, input);
 };
 
-DocKS3Schema.plugin(autoIncrement.plugin, { model: 'DocKS3', field: 'number', startAt: 1 });
+DocKS3Schema.plugin(AutoIncrement, {
+  id: 'docks3_project_seq',
+  inc_field: 'number',
+  reference_fields: ['project'],
+});
 
 module.exports = mongoose.model('DocKS3', DocKS3Schema);

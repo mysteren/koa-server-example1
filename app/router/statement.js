@@ -14,6 +14,10 @@ router.get('/statement',
     };
     const options = {};
 
+    if (q.project) {
+      filter.project = q.project;
+    }
+
     if (q._sort) {
       const sort = q._sort === 'id' ? '_id' : q._sort;
       const order = q._order === 'DESC' ? -1 : 1;

@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
+const AutoIncrementFactory = require('mongoose-sequence');
 const { ObjectExtend } = require('./../lib/functions');
 
-autoIncrement.initialize(mongoose.connection);
-
+const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 const { ObjectId, Mixed } = mongoose.Schema.Types;
 
 const StatementSchema = new mongoose.Schema({
@@ -53,6 +52,10 @@ StatementSchema.methods.load = function load(input) {
   return ObjectExtend(this, input);
 };
 
-StatementSchema.plugin(autoIncrement.plugin, { model: 'Statement', field: 'number', startAt: 1 });
+StatementSchema.plugin(AutoIncrement, {
+  id: 'stastement_project_seq',
+  inc_field: 'number',
+  reference_fields: ['project'],
+});
 
 module.exports = mongoose.model('Statement', StatementSchema);

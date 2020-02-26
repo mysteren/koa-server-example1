@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
 const bcrypt = require('bcryptjs');
 const { ObjectExtend } = require('./../lib/functions');
-
-autoIncrement.initialize(mongoose.connection);
-
-// const { Array } = mongoose.Schema.Types;
 
 const UserSchema = new mongoose.Schema({
   name: String,

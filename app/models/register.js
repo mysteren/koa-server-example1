@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
+const AutoIncrementFactory = require('mongoose-sequence');
 const { ObjectExtend } = require('./../lib/functions');
 
-autoIncrement.initialize(mongoose.connection);
-mongoose.set('useFindAndModify', false);
-
+const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 const { ObjectId } = mongoose.Schema.Types;
 
 const RegisterSchema = new mongoose.Schema({
@@ -43,6 +41,12 @@ RegisterSchema.methods.load = function load(input) {
   return ObjectExtend(this, input);
 };
 
-RegisterSchema.plugin(autoIncrement.plugin, { model: 'Register', field: 'number', startAt: 1 });
+RegisterSchema.plugin(AutoIncrement, {
+  id: 'register_project_seq',
+  inc_field: 'number',
+  reference_fields: ['project'],
+});
+
+// RegisterSchema.plugin(autoIncrement.plugin, { model: 'Register', field: 'number', startAt: 1 });
 
 module.exports = mongoose.model('Register', RegisterSchema);

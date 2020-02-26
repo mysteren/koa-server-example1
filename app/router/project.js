@@ -33,7 +33,7 @@ router.get('/project',
     }
 
     const list = await Project.find(filter, null, options);
-    const count = await Project.count(filter, null, options);
+    const count = await Project.countDocuments(filter, null, options);
 
     ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
     ctx.set('X-Total-Count', count);
