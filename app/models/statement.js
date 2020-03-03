@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
+const AutoIncrementFactory = require('mongoose-sequence');
+const { ObjectExtend } = require('./../lib/functions');
 
-autoIncrement.initialize(mongoose.connection);
-
+const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 const { ObjectId, Mixed } = mongoose.Schema.Types;
 
 const StatementSchema = new mongoose.Schema({
@@ -31,6 +31,11 @@ const StatementSchema = new mongoose.Schema({
   },
   measures: Mixed,
   act_hidden_work: Mixed,
+  user: {
+    type: ObjectId,
+    required: true,
+    ref: 'User',
+  },
 }, {
   timestamps: true,
   toJSON: {
@@ -43,6 +48,14 @@ const StatementSchema = new mongoose.Schema({
   },
 });
 
-StatementSchema.plugin(autoIncrement.plugin, { model: 'Statement', field: 'number', startAt: 1 });
+StatementSchema.methods.load = function load(input) {
+  return ObjectExtend(this, input);
+};
+
+StatementSchema.plugin(AutoIncrement, {
+  id: 'stastement_project_seq',
+  inc_field: 'number',
+  reference_fields: ['project'],
+});
 
 module.exports = mongoose.model('Statement', StatementSchema);

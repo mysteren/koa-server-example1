@@ -1,76 +1,84 @@
 const Router = require('koa-router');
+const passport = require('koa-passport');
 const Measure = require('../models/measure');
+const { isAdmin } = require('../lib/auth');
 
 const router = new Router();
 
 // get all records
-router.get('/measure', async (ctx) => {
-  const q = ctx.request.query;
-  const filter = {};
-  const options = {};
+router.get('/measure',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const q = ctx.request.query;
+    const filter = {};
+    const options = {};
 
-  if (q._sort) {
-    const sort = q._sort === 'id' ? '_id' : q._sort;
-    const order = q._order === 'DESC' ? -1 : 1;
-    options.sort = { [sort]: order };
-  }
+    if (q._sort) {
+      const sort = q._sort === 'id' ? '_id' : q._sort;
+      const order = q._order === 'DESC' ? -1 : 1;
+      options.sort = { [sort]: order };
+    }
 
-  options.skip = Number(q._start);
+    options.skip = Number(q._start);
 
-  if (q._end) {
-    options.limit = q._end - options.skip;
-  }
+    if (q._end) {
+      options.limit = q._end - options.skip;
+    }
 
-  if (q.id) {
-    filter._id = q.id;
-  }
+    if (q.id) {
+      filter._id = q.id;
+    }
 
-  const list = await Measure.find(filter, null, options).exec();
-  const count = await Measure.countDocuments(filter, null, options).exec();
+    const list = await Measure.find(filter, null, options);
+    const count = await Measure.countDocuments(filter, null, options);
 
-  ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
-  ctx.set('X-Total-Count', count);
-  ctx.body = list;
-});
+    ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
+    ctx.set('X-Total-Count', count);
+    ctx.body = list;
+  });
 
 // get one record by id
-router.get('/measure/:id', async (ctx) => {
-  const record = await Measure.findById(ctx.params.id);
-  ctx.body = record;
-});
+router.get('/measure/:id',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const filter = { _id: ctx.params.id };
+    const record = await Measure.findOne(filter);
+    ctx.body = record;
+  });
 
 // create new record
-router.post('/measure', async (ctx) => {
-  try {
-    const record = new Measure({ ...ctx.request.body });
-    await record.save();
+router.post('/measure',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const data = { ...ctx.request.body };
+    const record = new Measure();
+    await record.load(data).save();
     ctx.body = record;
-  } catch (err) {
-    ctx.status = 500;
-    ctx.body = err;
-  }
-});
+  });
 
 // update record
-router.put('/measure/:id', async (ctx) => {
-  try {
-    let record = await Measure.findByIdAndUpdate(
-      ctx.params.id,
-      { ...ctx.request.body },
-      { useFindAndModify: false, runValidators: true },
-    );
-    record = await Measure.findById(ctx.params.id);
+router.put('/measure/:id',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const filter = { _id: ctx.params.id };
+    let record = await Measure.findOne(filter);
+    if (!record) {
+      ctx.throw(404, 'Запись не найдена');
+    }
+    const data = ctx.request.body;
+    record = await record.load(data).save();
     ctx.body = record;
-  } catch (err) {
-    ctx.status = 500;
-    ctx.body = err;
-  }
-});
+  });
 
 // delete record
-router.delete('/measure/:id', async (ctx) => {
-  const record = await Measure.findByIdAndDelete(ctx.params.id);
-  ctx.body = record;
-});
+router.delete('/measure/:id',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    if (!isAdmin(ctx)) {
+      ctx.throw(403, 'Доступ запрещен');
+    }
+    const record = await Measure.findByIdAndDelete(ctx.params.id);
+    ctx.body = record;
+  });
 
 module.exports = router;

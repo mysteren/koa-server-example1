@@ -23,6 +23,20 @@ if (config.util.getEnv('NODE_ENV') === 'test') {
   servPort = config.server_test.port;
 }
 
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    ctx.status = err.status || 500;
+    ctx.body = err.message;
+    ctx.app.emit('error', err, ctx);
+  }
+});
+
+app.on('error', (err, ctx) => {
+  console.error(err);
+});
+
 app.use(kbody());
 app.use(cors());
 app.use(session(config.session, app));
@@ -31,6 +45,7 @@ require('./auth');
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 app.use(router());
 // app.use(router.allowedMethods());
 

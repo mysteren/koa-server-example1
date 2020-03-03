@@ -1,71 +1,81 @@
 const Router = require('koa-router');
+const passport = require('koa-passport');
 const Entity = require('../models/entity');
+const { isAdmin } = require('../lib/auth');
 
 const router = new Router();
 
 // get all records
-router.get('/entity', async (ctx) => {
-  const q = ctx.request.query;
-  const options = {};
-  if (q._sort) {
-    const sort = q._sort === 'id' ? '_id' : q._sort;
-    const order = q._order === 'DESC' ? -1 : 1;
-    options.sort = { [sort]: order };
-  }
+router.get('/entity',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const q = ctx.request.query;
+    const options = {};
+    const filter = {};
 
-  options.skip = Number(q._start);
+    if (q._sort) {
+      const sort = q._sort === 'id' ? '_id' : q._sort;
+      const order = q._order === 'DESC' ? -1 : 1;
+      options.sort = { [sort]: order };
+    }
 
-  if (q._end) {
-    options.limit = q._end - options.skip;
-  }
+    options.skip = Number(q._start);
 
-  const list = await Entity.find(null, null, options).exec();
+    if (q._end) {
+      options.limit = q._end - options.skip;
+    }
 
-  const count = await Entity.countDocuments(null, null, options).exec();
+    const list = await Entity.find(filter, null, options);
+    const count = await Entity.countDocuments(filter, null, options);
 
-  ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
-  ctx.set('X-Total-Count', count);
-  ctx.body = list;
-});
+    ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
+    ctx.set('X-Total-Count', count);
+    ctx.body = list;
+  });
 
 // get one record by id
-router.get('/entity/:id', async (ctx) => {
-  const record = await Entity.findById(ctx.params.id);
-  ctx.body = record;
-});
+router.get('/entity/:id',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const filter = { _id: ctx.params.id };
+    const record = await Entity.findOne(filter);
+    ctx.body = record;
+  });
 
 // create new record
-router.post('/entity', async (ctx) => {
-  try {
-    let record = new Entity({ ...ctx.request.body });
-    record = await record.save();
+router.post('/entity',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const data = { ...ctx.request.body };
+    const record = new Entity();
+    await record.load(data).save();
     ctx.body = record;
-  } catch (err) {
-    ctx.status = 500;
-    ctx.body = err;
-  }
-});
+  });
 
 // update record
-router.put('/entity/:id', async (ctx) => {
-  try {
-    let record = await Entity.findByIdAndUpdate(
-      { _id: ctx.params.id },
-      { ...ctx.request.body },
-      { useFindAndModify: false, runValidators: true },
-    );
-    record = await Entity.findById(ctx.params.id);
+router.put('/entity/:id',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const filter = { _id: ctx.params.id };
+    let record = await Entity.findOne(filter);
+    if (!record) {
+      ctx.throw(404, 'Запись не найдена');
+    }
+    const data = ctx.request.body;
+    record = await record.load(data).save();
     ctx.body = record;
-  } catch (err) {
-    ctx.status = 500;
-    ctx.body = err;
-  }
-});
+  });
 
 // delete record
-router.delete('/entity/:id', async (ctx) => {
-  const record = await Entity.findByIdAndDelete(ctx.params.id);
-  ctx.body = record;
-});
+router.delete('/entity/:id',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    if (!isAdmin(ctx)) {
+      ctx.throw(403, 'Доступ запрещен');
+    }
+    const record = await Entity.findByIdAndDelete(ctx.params.id);
+    ctx.body = record;
+  });
+
 
 module.exports = router;

@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
 const bcrypt = require('bcryptjs');
-
-autoIncrement.initialize(mongoose.connection);
-
-// const { Array } = mongoose.Schema.Types;
+const { ObjectExtend } = require('./../lib/functions');
 
 const UserSchema = new mongoose.Schema({
   name: String,
@@ -40,24 +36,9 @@ UserSchema.virtual('password')
   })
   .get(function get() { return this._plainPassword; });
 
-UserSchema.methods.load = function load({
-  name,
-  username,
-  password,
-  permissions,
-}) {
-  this.name = name;
-  this.username = username;
-
-  if (permissions) {
-    this.permissions = permissions;
-  }
-
-  if (password) {
-    this.password = password;
-  }
-
-  return this;
+UserSchema.methods.load = function load(input) {
+  const data = input;
+  return ObjectExtend(this, data);
 };
 
 UserSchema.methods.checkPassword = function checkPassword(password) {

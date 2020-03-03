@@ -8,13 +8,13 @@ const mainRouter = new Router();
 mainRouter.get('/',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const body = {};
-    body.config = config.app;
     const n = ctx.session.views + 1 || 0;
+    const body = {
+      version: config.app.version,
+      cookies: ctx.cookies.get('koa:sess'),
+      views: n,
+    };
     ctx.session.views = n;
-    body.session = ctx.session;
-    body.cookies = ctx.cookies.get('koa:sess');
-    body.state = ctx.state;
     ctx.body = body;
   });
 

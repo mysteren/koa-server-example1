@@ -41,8 +41,11 @@ const localStrategy = new LocalStrategy({
   });
 }));
 
+const isAdmin = (ctx) => ctx.state.user.permissions.includes('admin');
+
 module.exports = {
   setJwtToken,
   jwtStrategy,
   localStrategy,
+  isAdmin,
 };
