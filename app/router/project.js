@@ -91,7 +91,8 @@ router.delete('/project/:id',
     if (!record) {
       ctx.throw(404, 'Запись не найдена');
     }
-    const result = record.delete();
+    // const result = record.delete();
+    const result = record.deleteWithRelations();
     ctx.body = result;
   });
 

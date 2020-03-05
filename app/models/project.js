@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const AutoIncrementFactory = require('mongoose-sequence');
 const { ObjectExtend } = require('./../lib/functions');
+const Statement = require('./statement');
 
 const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 const { ObjectId } = mongoose.Schema.Types;
@@ -98,8 +99,16 @@ const dataModification = (input) => {
   return data;
 };
 
+
 ProjectSchema.methods.load = function load(input) {
   return ObjectExtend(this, dataModification(input));
+};
+
+ProjectSchema.methods.deleteWithRelations = async function deleteWithRelations() {
+  // console.log(this, this._id);
+  const r = await Statement.deleteMany({ project: this._id });
+  console.log(r);
+  return true;
 };
 
 ProjectSchema.plugin(AutoIncrement, {
