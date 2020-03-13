@@ -92,7 +92,10 @@ router.delete('/project/:id',
       ctx.throw(404, 'Запись не найдена');
     }
     // const result = record.delete();
-    const result = record.deleteWithRelations();
+    const result = await record.deleteWithRelations(record);
+    if (!result) {
+      ctx.throw(500, 'Ошибка удаления записи');
+    }
     ctx.body = result;
   });
 
@@ -168,6 +171,7 @@ router.get('/get-project-daily-summary/:id',
     output.project = await Project.findOne(filter)
       .populate([
         { path: 'work_groups.works.measures.measure' },
+        { path: 'contractor' },
       ]);
 
     if (!output.project) {

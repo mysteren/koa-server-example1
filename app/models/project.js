@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const AutoIncrementFactory = require('mongoose-sequence');
 const { ObjectExtend } = require('./../lib/functions');
 const Statement = require('./statement');
+const Register = require('./register');
+const DocKS2 = require('../models/docks2');
+const DocKS3 = require('../models/docks3');
 
 const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 const { ObjectId } = mongoose.Schema.Types;
@@ -104,11 +107,37 @@ ProjectSchema.methods.load = function load(input) {
   return ObjectExtend(this, dataModification(input));
 };
 
-ProjectSchema.methods.deleteWithRelations = async function deleteWithRelations() {
+ProjectSchema.methods.deleteWithRelations = async function deleteWithRelations(record) {
   // console.log(this, this._id);
-  const r = await Statement.deleteMany({ project: this._id });
-  console.log(r);
-  return true;
+  const statementDelete = new Promise((resolve) => {
+    resolve(Statement.deleteMany({ project: this._id }));
+  });
+  const registerDelete = new Promise((resolve) => {
+    resolve(Register.deleteMany({ project: this._id }));
+  });
+  const docKs2Delete = new Promise((resolve) => {
+    resolve(DocKS2.deleteMany({ project: this._id }));
+  });
+  const docKs3Delete = new Promise((resolve) => {
+    resolve(DocKS3.deleteMany({ project: this._id }));
+  });
+  const recordDelete = new Promise((resolve) => {
+    resolve(record.delete());
+  });
+  let result;
+  await Promise.all([
+    statementDelete,
+    registerDelete,
+    docKs2Delete,
+    docKs3Delete,
+    recordDelete,
+  ])
+    .then(() => {
+    })
+    .catch(() => {
+      result = false;
+    });
+  return result;
 };
 
 ProjectSchema.plugin(AutoIncrement, {
