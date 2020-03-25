@@ -1,7 +1,8 @@
 const Router = require('koa-router');
 const combineRouters = require('koa-combine-routers');
 const passport = require('koa-passport');
-const config = require('config');
+//  const config = require('config');
+const { version } = require('../../package.json');
 
 const mainRouter = new Router();
 
@@ -10,7 +11,7 @@ mainRouter.get('/',
   async (ctx) => {
     const n = ctx.session.views + 1 || 0;
     const body = {
-      version: config.app.version,
+      version,
       cookies: ctx.cookies.get('koa:sess'),
       views: n,
     };
