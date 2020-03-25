@@ -1,0 +1,7 @@
+stages:
+  - deploy
+
+ install_dependencies:
+      stage: deploy
+      script:
+        - sh cmd/deploy.sh   
