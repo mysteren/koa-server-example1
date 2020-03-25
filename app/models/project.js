@@ -71,6 +71,12 @@ const ProjectSchema = new mongoose.Schema({
     required: true,
     ref: 'User',
   },
+  documents: [{
+    name: String,
+  }],
+  materials: [{
+    name: String,
+  }],
 }, {
   timestamps: true,
   toJSON: {
