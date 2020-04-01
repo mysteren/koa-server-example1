@@ -19,9 +19,16 @@ const setJwtToken = (data) => jwt.sign(data, jwtOptions.secretOrKey);
 
 const jwtStrategy = new JwtStrategy(jwtOptions, (payload, done) => {
   if (payload && payload.id) {
-    return done(null, payload);
+    User.findById(payload.id).exec((err, user) => {
+      if (err) {
+        return done(err);
+      } else if (!user.permissions.includes('admin') && (!user || !user.checkLicense())) {
+        return done(null, false, { message: 'Нет такого пользователя или лицензия пользователя закончилась.' });
+      } else {
+        return done(null, payload);
+      }
+    });
   }
-  return done(null, false);
 });
 
 const localStrategy = new LocalStrategy({
@@ -33,11 +40,15 @@ const localStrategy = new LocalStrategy({
   User.findOne({ username }, (err, user) => {
     if (err) {
       return done(err);
+    } else if (!user) {
+      return done(null, false, { message: 'Нет такого пользователя' });
+    } else if (!user.checkPassword(password)) {
+      return done(null, false, { message: 'Неправильный пароль' });
+    } else if (!user.permissions.includes('admin') && !user.checkLicense()) {
+      return done(null, false, { message: 'Истёк срок лицензии' });
+    } else {
+      return done(null, user);
     }
-    if (!user || !user.checkPassword(password)) {
-      return done(null, false, { message: 'Нет такого пользователя или пароль неверен.' });
-    }
-    return done(null, user);
   });
 }));
 

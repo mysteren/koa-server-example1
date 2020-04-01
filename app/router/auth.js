@@ -17,6 +17,7 @@ router.post('/auth/login', async (ctx, next) => {
         v: user.__v,
         username: user.username,
         permissions: user.permissions,
+        license: user.license,
       };
       const token = setJwtToken(payload);
       ctx.body = { token };

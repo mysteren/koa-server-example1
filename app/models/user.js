@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
   passwordHash: String,
   salt: String,
   permissions: [String],
+  license: Date,
 },
 {
   timestamps: true,
@@ -44,6 +45,14 @@ UserSchema.methods.load = function load(input) {
 UserSchema.methods.checkPassword = function checkPassword(password) {
   if (password && this.passwordHash) {
     return bcrypt.compareSync(password, this.passwordHash);
+  }
+  return false;
+};
+
+UserSchema.methods.checkLicense = function checkLicense() {
+  if (this.license) {
+    const now = new Date();
+    return Date.parse(now) < Date.parse(this.license);
   }
   return false;
 };
