@@ -13,7 +13,7 @@ router.get('/statement',
       user: ctx.state.user.id,
     };
     const options = {};
-
+    console.log(q);
     if (q.project) {
       filter.project = q.project;
     }

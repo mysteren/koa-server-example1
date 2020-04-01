@@ -15,7 +15,7 @@ router.get('/project',
       user: ctx.state.user.id,
     };
     const options = {};
-
+    console.log(q);
     if (q._sort) {
       const sort = q._sort === 'id' ? '_id' : q._sort;
       const order = q._order === 'DESC' ? -1 : 1;
