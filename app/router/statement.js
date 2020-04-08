@@ -14,9 +14,7 @@ router.get('/statement',
     };
     const options = {};
 
-    if (q.project) {
-      filter.project = q.project;
-    }
+    
 
     if (q._sort) {
       const sort = q._sort === 'id' ? '_id' : q._sort;
@@ -32,6 +30,24 @@ router.get('/statement',
 
     if (q.id) {
       filter._id = q.id;
+    }
+
+    if (q.project) {
+      filter.project = q.project;
+    }
+
+    if (q.work) {
+      filter.work = q.work;
+    }
+
+    if (q.date_start || q.date_end) {
+      filter.date = {};
+      if (q.date_start) {
+        filter.date.$gt = q.date_start
+      }
+      if (q.date_end) {
+        filter.date.$lt = q.date_end
+      }
     }
 
     const list = await Statement.find(filter, null, options);

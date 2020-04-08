@@ -225,4 +225,43 @@ router.get('/get-project-daily-summary/:id',
     ctx.body = output;
   });
 
+router.get('/work',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const q = ctx.request.query;
+    const filter = {
+      user: ctx.state.user.id,
+    };
+
+    if (q.project) {
+      filter._id = q.project;
+    }
+
+    const options = {};
+    let output = [];
+    const Projects = await Project.find(filter, null, options);
+    if (Array.isArray(Projects)) {
+      Projects.forEach((project) => {
+        
+        if (Array.isArray(project.work_groups)) {
+          project.work_groups.forEach((group) => {
+            if (Array.isArray(group.works)) {
+              group.works.forEach((work) => {
+                output.push({
+                  id: work.id,
+                  name: work.name
+                })
+              });
+            }
+          });
+        } 
+      })
+    }
+
+    ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
+    ctx.set('X-Total-Count', output.length);
+
+    ctx.body = output;
+  });
+
 module.exports = router;
