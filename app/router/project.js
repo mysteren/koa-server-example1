@@ -32,6 +32,16 @@ router.get('/project',
       filter._id = q.id;
     }
 
+    if (q.date_start || q.date_end) {
+      filter.contract_date = {};
+      if (q.date_start) {
+        filter.contract_date.$gte = q.date_start
+      }
+      if (q.date_end) {
+        filter.contract_date.$lte = q.date_end
+      }
+    }
+
     const list = await Project.find(filter, null, options);
     const count = await Project.countDocuments(filter, null, options);
 
@@ -255,6 +265,39 @@ router.get('/work',
             }
           });
         } 
+      })
+    }
+
+    ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
+    ctx.set('X-Total-Count', output.length);
+
+    ctx.body = output;
+  });
+
+  // GET:projects-years
+router.get('/projects-years',
+  passport.authenticate('jwt'),
+  async (ctx) => {
+    const q = ctx.request.query;
+    const filter = {
+      user: ctx.state.user.id,
+    };
+    const options = {
+      sort: { contract_date: 'DESC' },
+    };
+    const select = {
+      contract_date: true,
+    }
+    const output = [];
+    const Projects = await Project.find(filter, select, options);
+    if (Array.isArray(Projects)) {
+      Projects.forEach((project) => {
+        if (project.contract_date) {
+          const year = project.contract_date.getFullYear();
+          if (output.indexOf(year) === -1) {
+            output.push(year);
+          }
+        }
       })
     }
 
