@@ -13,8 +13,9 @@ router.get('/statement',
       user: ctx.state.user.id,
     };
     const options = {};
-
-    
+    if (q.project) {
+      filter.project = q.project;
+    }
 
     if (q._sort) {
       const sort = q._sort === 'id' ? '_id' : q._sort;
