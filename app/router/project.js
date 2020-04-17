@@ -223,6 +223,9 @@ router.get('/get-project-daily-summary/:id',
                 if (date <= endDate && date >= startDate) {
                   measure.rangeCount += value;
                 }
+
+                measure.rangeCount = Math.round(measure.rangeCount * 10000)/10000;
+                measure.totalCount = Math.round(measure.totalCount * 10000)/10000;
               }
             }
           }
