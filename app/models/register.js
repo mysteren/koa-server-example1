@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const AutoIncrementFactory = require('mongoose-sequence');
-const { ObjectExtend } = require('./../lib/functions');
+const { ObjectExtend } = require('../lib/functions');
 
 const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 const { ObjectId } = mongoose.Schema.Types;

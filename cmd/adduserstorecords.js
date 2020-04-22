@@ -1,12 +1,14 @@
 #!/usr/bin/env node
-require('./../app/db');
+require('../app/db');
 
-const User = require('./../app/models/user');
-const Project = require('./../app/models/project');
-const Statement = require('./../app/models/statement');
-const Register = require('./../app/models/register');
-const DocKS2 = require('./../app/models/docks2');
-const DocKS3 = require('./../app/models/docks3');
+const User = require('../app/models/user');
+const Project = require('../app/models/project');
+const Statement = require('../app/models/statement');
+const Register = require('../app/models/register');
+const DocKS2 = require('../app/models/docks2');
+const DocKS3 = require('../app/models/docks3');
+const Measure = require('../app/models/measure');
+const Entity = require('../app/models/entity');
 
 const start = async () => {
   const getUsers = new Promise((resolve) => {
@@ -17,21 +19,31 @@ const start = async () => {
     resolve(Project.find());
   });
 
+  const getMeasure = new Promise((resolve) => {
+    resolve(Measure.find());
+  });
+
+  const getEntity = new Promise((resolve) => {
+    resolve(Entity.find());
+  });
+
   let userOwner;
 
-  Promise.all([getUsers, getProjects])
+  Promise.all([getUsers, getProjects, getMeasure, getEntity])
     .then((values) => {
-      const [users, projects] = values;
+      const [users, projects, measures, entities] = values;
       const promises = [];
       if (users.length && projects.length) {
         userOwner = users.find((u) => u.username === 'admin') || users[0];
 
-        projects.forEach((p) => {
-          if (!p.user) {
-            const project = p;
-            project.user = userOwner._id;
-            promises.push(project.save());
-          }
+        [projects, measures, entities].forEach((modelsList) => {
+          modelsList.forEach((r) => {
+            if (!r.user) {
+              const project = r;
+              project.user = userOwner._id;
+              promises.push(project.save());
+            }
+          });
         });
       } else {
         throw new Error('records empty');
@@ -48,6 +60,7 @@ const start = async () => {
       const [registers, docks3rcds, docks2rcds, statements, projects] = values;
 
       [registers, docks3rcds, docks2rcds, statements].forEach((modelsList) => {
+        // console.log(modelsList.length);
         modelsList.forEach((r) => {
           if (!r.user) {
             const project = projects.find((p) => p._id.equals(r.project));
@@ -68,20 +81,6 @@ const start = async () => {
     .finally(() => {
       process.exit();
     });
-
-  // console.log('done');
-  /* Project.find()
-    .then((projects) => {
-      console.log(projects);
-
-      projects.forEach((project) => {
-
-      });
-      return Promise.all(projects);
-    })
-    .then(() => {
-      process.exit();
-    }); */
 };
 
 start();

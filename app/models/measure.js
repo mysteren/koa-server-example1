@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const { ObjectExtend } = require('./../lib/functions');
+const { ObjectExtend } = require('../lib/functions');
+
+const { ObjectId } = mongoose.Schema.Types;
 
 const MeasureSchema = new mongoose.Schema({
   name: {
@@ -10,6 +12,11 @@ const MeasureSchema = new mongoose.Schema({
     type: String,
     default: '',
     required: true,
+  },
+  user: {
+    type: ObjectId,
+    required: true,
+    ref: 'User',
   },
 }, {
   timestamps: true,

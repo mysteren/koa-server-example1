@@ -44,10 +44,10 @@ router.get('/statement',
     if (q.date_start || q.date_end) {
       filter.date = {};
       if (q.date_start) {
-        filter.date.$gte = q.date_start
+        filter.date.$gte = q.date_start;
       }
       if (q.date_end) {
-        filter.date.$lte = q.date_end
+        filter.date.$lte = q.date_end;
       }
     }
 

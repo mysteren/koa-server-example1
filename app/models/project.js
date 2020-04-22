@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const AutoIncrementFactory = require('mongoose-sequence');
-const { ObjectExtend } = require('./../lib/functions');
+const { ObjectExtend } = require('../lib/functions');
 const Statement = require('./statement');
 const Register = require('./register');
-const DocKS2 = require('../models/docks2');
-const DocKS3 = require('../models/docks3');
+const DocKS2 = require('./docks2');
+const DocKS3 = require('./docks3');
 
 const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 const { ObjectId } = mongoose.Schema.Types;

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const { ObjectExtend } = require('./../lib/functions');
+const { ObjectExtend } = require('../lib/functions');
+
+const { ObjectId } = mongoose.Schema.Types;
 
 const EntitySchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -20,6 +22,11 @@ const EntitySchema = new mongoose.Schema({
       }],
     }],
   }],
+  user: {
+    type: ObjectId,
+    required: true,
+    ref: 'User',
+  },
 }, {
   timestamps: true,
   toJSON: {

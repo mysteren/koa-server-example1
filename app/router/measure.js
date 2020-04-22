@@ -1,7 +1,6 @@
 const Router = require('koa-router');
 const passport = require('koa-passport');
 const Measure = require('../models/measure');
-const { isAdmin } = require('../lib/auth');
 
 const router = new Router();
 
@@ -10,7 +9,9 @@ router.get('/measure',
   passport.authenticate('jwt'),
   async (ctx) => {
     const q = ctx.request.query;
-    const filter = {};
+    const filter = {
+      user: ctx.state.user.id,
+    };
     const options = {};
 
     if (q._sort) {
@@ -41,7 +42,10 @@ router.get('/measure',
 router.get('/measure/:id',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const filter = { _id: ctx.params.id };
+    const filter = {
+      _id: ctx.params.id,
+      user: ctx.state.user.id,
+    };
     const record = await Measure.findOne(filter);
     ctx.body = record;
   });
@@ -50,7 +54,10 @@ router.get('/measure/:id',
 router.post('/measure',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const data = { ...ctx.request.body };
+    const data = {
+      ...ctx.request.body,
+      user: ctx.state.user.id,
+    };
     const record = new Measure();
     await record.load(data).save();
     ctx.body = record;
@@ -60,7 +67,10 @@ router.post('/measure',
 router.put('/measure/:id',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const filter = { _id: ctx.params.id };
+    const filter = {
+      _id: ctx.params.id,
+      user: ctx.state.user.id,
+    };
     let record = await Measure.findOne(filter);
     if (!record) {
       ctx.throw(404, 'Запись не найдена');
@@ -74,11 +84,16 @@ router.put('/measure/:id',
 router.delete('/measure/:id',
   passport.authenticate('jwt'),
   async (ctx) => {
-    if (!isAdmin(ctx)) {
-      ctx.throw(403, 'Доступ запрещен');
+    const filter = {
+      _id: ctx.params.id,
+      user: ctx.state.user.id,
+    };
+    const record = await Measure.findOne(filter);
+    if (!record) {
+      ctx.throw(404, 'Запись не найдена');
     }
-    const record = await Measure.findByIdAndDelete(ctx.params.id);
-    ctx.body = record;
+    const result = record.delete();
+    ctx.body = result;
   });
 
 module.exports = router;

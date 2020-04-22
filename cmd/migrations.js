@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-require('./../app/db');
+require('../app/db');
 
-const User = require('./../app/models/user');
-const Project = require('./../app/models/project');
-const Statement = require('./../app/models/statement');
-const Register = require('./../app/models/register');
-const DocKS2 = require('./../app/models/docks2');
-const DocKS3 = require('./../app/models/docks3');
-const Measure = require('./../app/models/measure');
-const Entity = require('./../app/models/entity');
+const User = require('../app/models/user');
+const Project = require('../app/models/project');
+const Statement = require('../app/models/statement');
+const Register = require('../app/models/register');
+const DocKS2 = require('../app/models/docks2');
+const DocKS3 = require('../app/models/docks3');
+const Measure = require('../app/models/measure');
+const Entity = require('../app/models/entity');
 
 const m_v1 = async () => {
   const getUsers = new Promise((resolve) => {

@@ -34,10 +34,10 @@ router.get('/project',
     if (q.date_start || q.date_end) {
       filter.contract_date = {};
       if (q.date_start) {
-        filter.contract_date.$gte = q.date_start
+        filter.contract_date.$gte = q.date_start;
       }
       if (q.date_end) {
-        filter.contract_date.$lte = q.date_end
+        filter.contract_date.$lte = q.date_end;
       }
     }
 
@@ -224,8 +224,8 @@ router.get('/get-project-daily-summary/:id',
                   measure.rangeCount += value;
                 }
 
-                measure.rangeCount = Math.round(measure.rangeCount * 10000)/10000;
-                measure.totalCount = Math.round(measure.totalCount * 10000)/10000;
+                measure.rangeCount = Math.round(measure.rangeCount * 10000) / 10000;
+                measure.totalCount = Math.round(measure.totalCount * 10000) / 10000;
               }
             }
           }
@@ -250,24 +250,23 @@ router.get('/work',
     }
 
     const options = {};
-    let output = [];
+    const output = [];
     const Projects = await Project.find(filter, null, options);
     if (Array.isArray(Projects)) {
       Projects.forEach((project) => {
-        
         if (Array.isArray(project.work_groups)) {
           project.work_groups.forEach((group) => {
             if (Array.isArray(group.works)) {
               group.works.forEach((work) => {
                 output.push({
                   id: work.id,
-                  name: work.name
-                })
+                  name: work.name,
+                });
               });
             }
           });
-        } 
-      })
+        }
+      });
     }
 
     ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');
@@ -276,11 +275,11 @@ router.get('/work',
     ctx.body = output;
   });
 
-  // GET:projects-years
+// GET:projects-years
 router.get('/projects-years',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const q = ctx.request.query;
+    // const q = ctx.request.query;
     const filter = {
       user: ctx.state.user.id,
     };
@@ -289,7 +288,7 @@ router.get('/projects-years',
     };
     const select = {
       contract_date: true,
-    }
+    };
     const output = [];
     const Projects = await Project.find(filter, select, options);
     if (Array.isArray(Projects)) {
@@ -300,7 +299,7 @@ router.get('/projects-years',
             output.push(year);
           }
         }
-      })
+      });
     }
 
     ctx.set('Access-Control-Expose-Headers', 'X-Total-Count');

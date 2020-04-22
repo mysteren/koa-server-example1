@@ -1,6 +1,6 @@
 const Router = require('koa-router');
 const passport = require('koa-passport');
-const { setJwtToken } = require('./../lib/auth');
+const { setJwtToken } = require('../lib/auth');
 
 const router = new Router();
 

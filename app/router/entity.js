@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const passport = require('koa-passport');
 const Entity = require('../models/entity');
-const { isAdmin } = require('../lib/auth');
+// const { isAdmin } = require('../lib/auth');
 
 const router = new Router();
 
@@ -11,7 +11,9 @@ router.get('/entity',
   async (ctx) => {
     const q = ctx.request.query;
     const options = {};
-    const filter = {};
+    const filter = {
+      user: ctx.state.user.id,
+    };
 
     if (q._sort) {
       const sort = q._sort === 'id' ? '_id' : q._sort;
@@ -37,7 +39,10 @@ router.get('/entity',
 router.get('/entity/:id',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const filter = { _id: ctx.params.id };
+    const filter = {
+      _id: ctx.params.id,
+      user: ctx.state.user.id,
+    };
     const record = await Entity.findOne(filter);
     ctx.body = record;
   });
@@ -46,7 +51,7 @@ router.get('/entity/:id',
 router.post('/entity',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const data = { ...ctx.request.body };
+    const data = { ...ctx.request.body, user: ctx.state.user.id };
     const record = new Entity();
     await record.load(data).save();
     ctx.body = record;
@@ -56,7 +61,10 @@ router.post('/entity',
 router.put('/entity/:id',
   passport.authenticate('jwt'),
   async (ctx) => {
-    const filter = { _id: ctx.params.id };
+    const filter = {
+      _id: ctx.params.id,
+      user: ctx.state.user.id,
+    };
     let record = await Entity.findOne(filter);
     if (!record) {
       ctx.throw(404, 'Запись не найдена');
@@ -70,12 +78,16 @@ router.put('/entity/:id',
 router.delete('/entity/:id',
   passport.authenticate('jwt'),
   async (ctx) => {
-    if (!isAdmin(ctx)) {
-      ctx.throw(403, 'Доступ запрещен');
+    const filter = {
+      _id: ctx.params.id,
+      user: ctx.state.user.id,
+    };
+    const record = await Entity.findOne(filter);
+    if (!record) {
+      ctx.throw(404, 'Запись не найдена');
     }
-    const record = await Entity.findByIdAndDelete(ctx.params.id);
-    ctx.body = record;
+    const result = record.delete();
+    ctx.body = result;
   });
-
 
 module.exports = router;

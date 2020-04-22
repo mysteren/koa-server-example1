@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { ObjectExtend } = require('./../lib/functions');
+const { ObjectExtend } = require('../lib/functions');
 
 const UserSchema = new mongoose.Schema({
   name: String,
